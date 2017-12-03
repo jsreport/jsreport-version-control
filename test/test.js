@@ -1,7 +1,7 @@
 const JsReport = require('jsreport-core')
 require('should')
 
-describe.only('version control', () => {
+describe('version control', () => {
   let jsreport
   let collection
 
