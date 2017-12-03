@@ -4,7 +4,7 @@
   "description": "jsreport extension adding support for versioning templates and other entities",
   "main": "index.js",
   "scripts": {
-    "test": "set DEBUG=jsreport&&mocha test",
+    "test": "set DEBUG=jsreport&&mocha test&&standard",
     "start": "jsreport-studio-start --httpPort 5488"
   },
   "keywords": [
@@ -40,9 +40,11 @@
     "eslint-config-standard-jsx": "4.0.2",
     "eslint-plugin-babel": "4.1.2",
     "jsreport": "1.9.2",
+    "jsreport-assets": "0.6.7",
     "jsreport-core": "1.5.1",
+    "jsreport-data": "1.1.2",
     "jsreport-express": "1.2.4",
-    "jsreport-fs-store": "2.0.4",
+    "jsreport-phantom-pdf": "1.4.6",
     "jsreport-studio-dev": "1.1.1",
     "jsreport-templates": "1.2.2",
     "mocha": "4.0.1",
@@ -52,7 +54,7 @@
     "supertest": "3.0.0"
   },
   "dependencies": {
-  
+    "node.extend": "2.0.0"
   },
   "files": [
     "lib",
