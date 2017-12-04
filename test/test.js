@@ -77,12 +77,46 @@ describe('version control', () => {
     templates[0].content.should.be.eql('3')
   })
 
-  it('diff should list files changes', async () => {
+  it('diff should list files changes for the first commit', async () => {
     await collection.insert({name: 'foo', content: '1'})
     const commit = await jsreport.versionControl.commit('1')
     const diff = await jsreport.versionControl.diff(commit._id)
     diff.should.have.length(1)
     diff[0].path.should.be.eql('foo')
+  })
+
+  it('diff should list files changes between two commits', async () => {
+    await collection.insert({name: 'foo', content: '1'})
+    await jsreport.versionControl.commit('1')
+    await collection.update({name: 'foo'}, {$set: {content: '2'}})
+    const commit2 = await jsreport.versionControl.commit('2')
+    const diff = await jsreport.versionControl.diff(commit2._id)
+    diff.should.have.length(1)
+    diff[0].path.should.be.eql('foo')
+    diff[0].patch.documentProperties.should.have.length(1)
+  })
+
+  it('diff should list files changes between two commits where second commit has insert', async () => {
+    await collection.insert({name: '1', content: '1'})
+    await jsreport.versionControl.commit('1')
+    await collection.insert({name: '2', content: '2'})
+    const commit2 = await jsreport.versionControl.commit('2')
+    const diff = await jsreport.versionControl.diff(commit2._id)
+    diff.should.have.length(1)
+    diff[0].path.should.be.eql('2')
+    diff[0].patch.documentProperties.should.have.length(1)
+  })
+
+  it('diff should list deep document properties changes between two commits', async () => {
+    await collection.insert({name: 'foo', content: '1', phantom: { header: '1' }})
+    await jsreport.versionControl.commit('1')
+    await collection.update({name: 'foo'}, {$set: { phantom: { header: '2' } }})
+    const commit2 = await jsreport.versionControl.commit('2')
+    const diff = await jsreport.versionControl.diff(commit2._id)
+    diff.should.have.length(1)
+    diff[0].path.should.be.eql('foo')
+    diff[0].patch.documentProperties.should.have.length(1)
+    diff[0].patch.documentProperties[0].path.should.be.eql('phantom.header')
   })
 
   it('commit should store diffs for document properties separately', async () => {
@@ -114,6 +148,15 @@ describe('version control', () => {
     const dataItems = await jsreport.documentStore.collection('data').find({})
     dataItems.should.have.length(1)
     dataItems[0].shortid.should.be.eql('a')
+  })
+
+  it('entity insert in second commit should be present in the commit changes', async () => {
+    await collection.insert({name: '1'})
+    await jsreport.versionControl.commit('1')
+    await collection.insert({name: '2'})
+    const commit = await jsreport.versionControl.commit('2')
+    commit.changes.should.have.length(1)
+    commit.changes[0].path.should.be.eql('2')
   })
 
   it('should correctly recover dates', async () => {

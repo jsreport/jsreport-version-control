@@ -14,7 +14,7 @@
     "enabled": false
   },
   "connectionString": {
-    "name": "fs2"
+    "name": "fs"
   },
   "httpPort": 5488,
   "httpsPort": null,
@@ -49,6 +49,6 @@
     "timeout": 60000
   },
   "sample-template": {
-    "createSamples": false
+    "createSamples": true
   }
 }
