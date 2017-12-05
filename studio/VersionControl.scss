@@ -37,3 +37,18 @@
     z-index: 200;
   }
   
+  .listContainer {
+    margin-top: 2rem;
+    overflow: auto;
+    position: relative;
+    padding: 1rem;
+    min-height: 0;
+    height: auto;
+  }
+  
+  .listContainer > table {
+    // it somehow shows the horizontal scrollbar even when no needeit, this workaround to hide it
+    width: 95%;
+    // the tabs height based on flex box is otherwise wrongly calculated
+    position: absolute !important;
+  }
