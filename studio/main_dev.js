@@ -1,54 +1,10 @@
 import Studio from 'jsreport-studio'
-import React from 'react'
+import React, { Component } from 'react'
 import HistoryEditor from './HistoryEditor'
+import LocalChangesEditor from './LocalChangesEditor'
+import style from './VersionControl.scss'
 
-class CommitModal extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      message: ''
-    }
-  }
-
-  async commit () {
-    try {
-      await Studio.api.post(`/api/source-control/commit`, {
-        data: {
-          message: this.state.message
-        }
-      })
-    } catch (e) {
-      alert(e)
-    }
-  }
-
-  render () {
-    return (
-      <div>
-        <p>
-        Commit your changes.... see the list....
-        </p>
-        <label>Message</label>
-        <input type='text' value={this.state.message} onChange={(event) => this.setState({message: event.target.value})} />
-        <button onClick={() => this.commit()}>Commit</button>
-      </div>
-    )
-  }
-}
-
-Studio.addEditorComponent('versionControlHistory', HistoryEditor)
-
-Studio.addToolbarComponent((props) => <div className='toolbar-button' onClick={() => Studio.openModal(CommitModal)}>
-  <i className='fa fa-git ' />Commit
-</div>
-)
-
-Studio.addToolbarComponent((props) => <div className='toolbar-button' onClick={() =>
-  Studio.openTab({ key: 'versionControlHistory', editorComponentKey: 'versionControlHistory', title: 'Commits history' })}>
-  <i className='fa fa-git ' />History
-</div>
-)
-
+/*
 async function revert () {
   try {
     await Studio.api.post(`/api/source-control/revert`)
@@ -56,7 +12,64 @@ async function revert () {
     alert(e)
   }
 }
+*/
+Studio.addEditorComponent('versionControlHistory', HistoryEditor)
+Studio.addEditorComponent('versionControlLocalChanges', LocalChangesEditor)
+
+class VCToolbar extends Component {
+  constructor () {
+    super()
+    this.state = { }
+    this.tryHide = this.tryHide.bind(this)
+  }
+
+  componentDidMount () {
+    window.addEventListener('click', this.tryHide)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('click', this.tryHide)
+  }
+
+  tryHide () {
+    this.setState({ expandedToolbar: false })
+  }
+
+  openHistory (e) {
+    e.stopPropagation()
+    this.tryHide()
+    Studio.openTab({ key: 'versionControlHistory', editorComponentKey: 'versionControlHistory', title: 'Commits history' })
+  }
+
+  openLocalChanges (e) {
+    e.stopPropagation()
+    this.tryHide()
+    Studio.openTab({ key: 'versionControlLocalChanges', editorComponentKey: 'versionControlLocalChanges', title: 'Local changes' })
+  }
+
+  render () {
+    return (<div className='toolbar-button' onClick={(e) => this.openLocalChanges(e)}>
+      <i className='fa fa-history ' />Commit
+      <span className={style.runCaret} onClick={(e) => { e.stopPropagation(); this.setState({ expandedToolbar: !this.state.expandedToolbar }) }} />
+      <div className={style.runPopup} style={{display: this.state.expandedToolbar ? 'block' : 'none'}}>
+        <div title='History' className='toolbar-button' onClick={(e) => this.openHistory(e)}>
+          <i className='fa fa-history' /><span>History</span>
+        </div>
+      </div>
+    </div>)
+  }
+}
+
+Studio.addToolbarComponent((props) => <VCToolbar />)
+
+/*
+Studio.addToolbarComponent((props) => <div className='toolbar-button' onClick={() =>
+  Studio.openTab({ key: 'versionControlHistory', editorComponentKey: 'versionControlHistory', title: 'Commits history' })}>
+  <i className='fa fa-history ' />History
+</div>
+)
 
 Studio.addToolbarComponent((props) => <div className='toolbar-button' onClick={() => revert()}>
-  <i className='fa fa-git ' />Revert
+  <i className='fa fa-history ' />Revert
 </div>)
+*/

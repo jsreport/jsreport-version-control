@@ -1,0 +1,39 @@
+.popup {
+    background-color: #424c57;
+    position: absolute;
+    right: 0;
+    padding: 0.5rem;
+    top: 2.4rem;
+    z-index: 200
+  }
+  
+  .popup > div  {
+    padding: 0.5rem;
+  }
+  
+  .popup > div:hover {
+    background-color: red;
+  }
+  
+  .runCaret {
+    font-family: FontAwesome;
+    padding: 0.5rem;
+    font-size: 0.7rem;
+  }
+  
+  .runCaret:hover {
+    color: blue;
+  }
+  
+  .runCaret:after {
+    content: "\f0d7 "
+  }
+  
+  .runPopup {
+    background-color: #424c57;
+    top: 2.4rem;
+    position: absolute;
+    padding: 0.5rem;
+    z-index: 200;
+  }
+  
