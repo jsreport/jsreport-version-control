@@ -23,10 +23,12 @@ const renderChange = (c) => {
     <tr onClick={() => openDiff(c.patch.config)}>
       <td style={{textAlign: 'center'}}><i className={operationIcon(c.operation)} /></td>
       <td>{c.path}</td>
+      <td>{c.entitySet}</td>
     </tr>
     {c.operation === 'remove' ? null : c.patch.documentProperties.map((p) => <tr key={p.path} onClick={() => openDiff(p.patch)}>
       <td style={{textAlign: 'center'}}><i className={operationIcon(c.operation)} /></td>
       <td>{c.path}/{p.path}</td>
+      <td>{c.entitySet}</td>
     </tr>)}
   </tbody>)
 }
@@ -36,6 +38,7 @@ export default ({ changes }) => (<table className='table'>
     <tr>
       <th style={{width: '20px'}}>operation</th>
       <th>path</th>
+      <th>entity set</th>
     </tr>
   </thead>
   {changes.map((c) => renderChange(c))}

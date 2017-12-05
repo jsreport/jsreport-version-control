@@ -42,12 +42,12 @@ export default class HistoryEditor extends Component {
 
   renderCommit (commit) {
     return (<div>
+      <h2>
+        {commit.message}
+      </h2>
       <div>
-        <h2>
-          {commit.message}
-          <button className='button danger' onClick={() => this.checkout(commit._id)}>Checkout</button>
-        </h2>
-
+        <small>{commit.date.toLocaleString()}</small>
+        <button className='button danger' onClick={() => this.checkout(commit._id)}>Checkout</button>
       </div>
     </div>)
   }
@@ -73,6 +73,8 @@ export default class HistoryEditor extends Component {
           </div>
           <div className='block-item' style={{marginTop: '2rem'}}>
             {this.state.commit ? this.renderCommit(this.state.commit) : 'Select commit....'}
+          </div>
+          <div className='block-item' style={{marginTop: '2rem'}}>
             {this.state.diff ? <ChangesTable changes={this.state.diff} /> : ''}
           </div>
         </div>

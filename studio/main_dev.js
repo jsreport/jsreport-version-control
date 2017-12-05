@@ -4,15 +4,6 @@ import HistoryEditor from './HistoryEditor'
 import LocalChangesEditor from './LocalChangesEditor'
 import style from './VersionControl.scss'
 
-/*
-async function revert () {
-  try {
-    await Studio.api.post(`/api/source-control/revert`)
-  } catch (e) {
-    alert(e)
-  }
-}
-*/
 Studio.addEditorComponent('versionControlHistory', HistoryEditor)
 Studio.addEditorComponent('versionControlLocalChanges', LocalChangesEditor)
 
@@ -61,15 +52,3 @@ class VCToolbar extends Component {
 }
 
 Studio.addToolbarComponent((props) => <VCToolbar />)
-
-/*
-Studio.addToolbarComponent((props) => <div className='toolbar-button' onClick={() =>
-  Studio.openTab({ key: 'versionControlHistory', editorComponentKey: 'versionControlHistory', title: 'Commits history' })}>
-  <i className='fa fa-history ' />History
-</div>
-)
-
-Studio.addToolbarComponent((props) => <div className='toolbar-button' onClick={() => revert()}>
-  <i className='fa fa-history ' />Revert
-</div>)
-*/

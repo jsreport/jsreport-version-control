@@ -51,6 +51,21 @@ describe('version control', () => {
     templates.should.have.length(1)
   })
 
+  it('revert should work also for binary types', async () => {
+    await jsreport.documentStore.collection('assets').insert({
+      name: 'foo.html',
+      content: '1'
+    })
+    await jsreport.versionControl.commit('1')
+    await jsreport.documentStore.collection('assets').update({ name: 'foo.html' }, { $set: { content: '2' } })
+    await jsreport.versionControl.commit('2')
+    await jsreport.documentStore.collection('assets').update({ name: 'foo.html' }, { $set: { content: '3' } })
+    await jsreport.versionControl.revert()
+    const assets = await jsreport.documentStore.collection('assets').find({})
+    assets.should.have.length(1)
+    assets[0].content.toString().should.be.eql('2')
+  })
+
   it('history should list changed files', async () => {
     await collection.insert({name: 'foo'})
     await jsreport.versionControl.commit('1')
@@ -175,5 +190,22 @@ describe('version control', () => {
     const patch = JSON.parse(commit.changes[0].serializedPatch)
     patch.documentProperties.should.have.length(1)
     patch.documentProperties[0].path.should.be.eql('phantom.header')
+  })
+
+  it('localChanges should diff current state with previous commit', async () => {
+    await collection.insert({name: 'foo', recipe: '1'})
+    await jsreport.versionControl.commit('1')
+    await collection.update({name: 'foo'}, { $set: { recipe: '2' } })
+    const diff = await jsreport.versionControl.localChanges()
+    diff.should.have.length(1)
+    diff[0].path.should.be.eql('foo')
+    diff[0].operation.should.be.eql('update')
+  })
+
+  it('localChanges should not return diff of unchanged entities', async () => {
+    await collection.insert({name: 'foo', recipe: '1'})
+    await jsreport.versionControl.commit('1')
+    const diff = await jsreport.versionControl.localChanges()
+    diff.should.have.length(0)
   })
 })
