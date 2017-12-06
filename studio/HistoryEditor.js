@@ -9,7 +9,11 @@ export default class HistoryEditor extends Component {
     this.state = { history: [] }
   }
 
-  async componentDidMount () {
+  componentDidMount () {
+    this.load()
+  }
+
+  async load () {
     try {
       const res = await Studio.api.get(`/api/source-control/history`)
       this.setState({ history: res })
@@ -30,6 +34,8 @@ export default class HistoryEditor extends Component {
             _id: id
           }
         })
+        // studio needs a method to reload entities, it would be also usefull for export import
+        location.reload()
       }
     } catch (e) {
       alert(e)
@@ -49,9 +55,7 @@ export default class HistoryEditor extends Component {
 
   renderCommit (commit) {
     return (<div>
-      <h2>
-        {commit.message}
-      </h2>
+      <h2><i className='fa fa-info-circle' /> {commit.message}</h2>
       <div>
         <small>{commit.date.toLocaleString()}</small>
         <button className='button danger' onClick={() => this.checkout(commit._id)}>Checkout</button>
@@ -63,7 +67,9 @@ export default class HistoryEditor extends Component {
   render () {
     return (
       <div className='block custom-editor'>
-        <h1><i className='fa fa-history' /> Commits history</h1>
+        <h2><i className='fa fa-history' /> Commits history
+          <button className='button confirmation' onClick={() => this.load()}>Refresh</button>
+        </h2>
         <div className={style.listContainer + ' block-item'}>
           <table className='table'>
             <thead>
