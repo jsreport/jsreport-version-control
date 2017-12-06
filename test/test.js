@@ -208,4 +208,15 @@ describe('version control', () => {
     const diff = await jsreport.versionControl.localChanges()
     diff.should.have.length(0)
   })
+
+  it('renamed entity should store the new name in path', async () => {
+    await collection.insert({name: 'foo', recipe: '1'})
+    await jsreport.versionControl.commit('1')
+    await collection.update({name: 'foo'}, {$set: {name: 'foo2'}})
+    await jsreport.versionControl.commit('2')
+    await collection.update({name: 'foo2'}, {$set: {recipe: '2'}})
+    const diff = await jsreport.versionControl.localChanges()
+    diff.should.have.length(1)
+    diff[0].path.should.be.eql('foo2')
+  })
 })

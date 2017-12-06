@@ -49,6 +49,6 @@
     "timeout": 60000
   },
   "sample-template": {
-    "createSamples": true
+    "createSamples": false
   }
 }
