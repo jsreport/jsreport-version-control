@@ -1,13 +1,14 @@
 
 import Studio from 'jsreport-studio'
-import { Diff2Html } from 'diff2html'
-import diffStyle from './diff.css.js'
 
-const openDiff = (patch) => {
-  const style = '<style>' + diffStyle + '</style>'
-  const diff = Diff2Html.getPrettyHtml(patch, {inputFormat: 'diff', showFiles: false, matching: 'lines'})
-  const html = `<html><head>${style}</head><body>${diff}</body></html>`
-  Studio.setPreviewFrameSrc('data:text/html;charset=utf-8,' + encodeURIComponent(style + html))
+const openDiff = async (patch) => {
+  const res = await Studio.api.post('/api/source-control/diff-html', {
+    data: {
+      patch: patch
+    },
+    parseJSON: false
+  })
+  Studio.setPreviewFrameSrc('data:text/html;charset=utf-8,' + encodeURIComponent(res))
 }
 
 const operationIcon = (operation) => {
