@@ -58,3 +58,5 @@ typings/
 .env
 
 data
+studio/main.js
+studio/main.js.map
