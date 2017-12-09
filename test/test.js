@@ -134,6 +134,16 @@ describe('version control', () => {
     diff[0].patch.documentProperties[0].path.should.be.eql('phantom.header')
   })
 
+  it('diff should compare assets using utf8', async () => {
+    await jsreport.documentStore.collection('assets').insert({name: 'a', content: 'a'})
+    await jsreport.versionControl.commit('1')
+    await jsreport.documentStore.collection('assets').update({name: 'a'}, {$set: {content: 'č'}})
+    const commit2 = await jsreport.versionControl.commit('2')
+    const diff = await jsreport.versionControl.diff(commit2._id)
+    diff.should.have.length(1)
+    diff[0].patch.documentProperties[0].patch.should.containEql('č')
+  })
+
   it('commit should store diffs for document properties separately', async () => {
     await collection.insert({name: 'foo', content: '1', helpers: '1'})
     await jsreport.versionControl.commit('1')
