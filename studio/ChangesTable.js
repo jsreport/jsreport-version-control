@@ -2,7 +2,7 @@
 import Studio from 'jsreport-studio'
 
 const openDiff = async (patch) => {
-  const res = await Studio.api.post('/api/source-control/diff-html', {
+  const res = await Studio.api.post('/api/version-control/diff-html', {
     data: {
       patch: patch
     },

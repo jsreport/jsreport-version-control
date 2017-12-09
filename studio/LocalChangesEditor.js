@@ -15,7 +15,7 @@ export default class LocalChangesEditor extends Component {
 
   async load () {
     try {
-      const res = await Studio.api.get(`/api/source-control/local-changes`)
+      const res = await Studio.api.get(`/api/version-control/local-changes`)
       this.setState({ diff: res })
     } catch (e) {
       alert(e)
@@ -28,7 +28,7 @@ export default class LocalChangesEditor extends Component {
     }
 
     try {
-      await Studio.api.post(`/api/source-control/commit`, {
+      await Studio.api.post(`/api/version-control/commit`, {
         data: {
           message: this.state.message
         }
@@ -43,7 +43,7 @@ export default class LocalChangesEditor extends Component {
   async revert () {
     try {
       if (confirm('This will delete all your uncommited files and revert changes. Are you sure?')) {
-        await Studio.api.post(`/api/source-control/revert`)
+        await Studio.api.post(`/api/version-control/revert`)
         // studio needs a method to reload entities, it would be also usefull for export import
         location.reload()
       }

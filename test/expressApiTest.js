@@ -16,18 +16,18 @@ describe('version control API', () => {
     jsreport.express.server.close()
   })
 
-  it('GET /api/source-control/history', async () => {
+  it('GET /api/version-control/history', async () => {
     await jsreport.versionControl.commit('foo')
     const res = await request(jsreport.express.app)
-      .get('/api/source-control/history')
+      .get('/api/version-control/history')
       .expect(200)
 
     res.body.should.have.length(1)
   })
 
-  it('POST /api/source-control/commit', async () => {
+  it('POST /api/version-control/commit', async () => {
     await request(jsreport.express.app)
-      .post('/api/source-control/commit')
+      .post('/api/version-control/commit')
       .send({ message: 'foo' })
       .type('form')
       .expect(200)
@@ -36,10 +36,10 @@ describe('version control API', () => {
     history.should.have.length(1)
   })
 
-  it('POST /api/source-control/revert', async () => {
+  it('POST /api/version-control/revert', async () => {
     await jsreport.documentStore.collection('templates').insert({name: 'foo'})
     await request(jsreport.express.app)
-      .post('/api/source-control/revert')
+      .post('/api/version-control/revert')
       .expect(200)
 
     const templates = await jsreport.documentStore.collection('templates').find({})

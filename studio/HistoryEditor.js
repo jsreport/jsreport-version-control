@@ -15,7 +15,7 @@ export default class HistoryEditor extends Component {
 
   async load () {
     try {
-      const res = await Studio.api.get(`/api/source-control/history`)
+      const res = await Studio.api.get(`/api/version-control/history`)
       this.setState({ history: res })
     } catch (e) {
       alert(e)
@@ -24,12 +24,12 @@ export default class HistoryEditor extends Component {
 
   async checkout (id) {
     try {
-      const localChanges = await Studio.api.get(`/api/source-control/local-changes`)
+      const localChanges = await Studio.api.get(`/api/version-control/local-changes`)
       if (localChanges.length > 0) {
         return this.setState({error: 'You have uncommited changes. You need to commit or revert them before checkout.'})
       }
       if (confirm('This will change the state of all entities to the state stored with selected commit. Are you sure?')) {
-        await Studio.api.post(`/api/source-control/checkout`, {
+        await Studio.api.post(`/api/version-control/checkout`, {
           data: {
             _id: id
           }
@@ -46,7 +46,7 @@ export default class HistoryEditor extends Component {
     this.setState({ commit: c })
 
     try {
-      const res = await Studio.api.get(`/api/source-control/diff/${c._id}`)
+      const res = await Studio.api.get(`/api/version-control/diff/${c._id}`)
       this.setState({ diff: res })
     } catch (e) {
       alert(e)
