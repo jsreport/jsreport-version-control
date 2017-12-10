@@ -21,16 +21,11 @@ const operationIcon = (operation) => {
 
 const renderChange = (c) => {
   return (<tbody key={c.entitySet + c.path}>
-    <tr onClick={() => openDiff(c.patch.config)}>
+    <tr onClick={() => openDiff(c.patch)}>
       <td style={{textAlign: 'center'}}><i className={operationIcon(c.operation)} /></td>
       <td>{c.path}</td>
       <td>{c.entitySet}</td>
     </tr>
-    {c.operation === 'remove' ? null : c.patch.documentProperties.map((p) => <tr key={p.path} onClick={() => openDiff(p.patch)}>
-      <td style={{textAlign: 'center'}}><i className={operationIcon(c.operation)} /></td>
-      <td>{c.path}/{p.path}</td>
-      <td>{c.entitySet}</td>
-    </tr>)}
   </tbody>)
 }
 

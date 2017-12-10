@@ -1,5 +1,5 @@
 const JsReport = require('jsreport-core')
-require('should')
+const should = require('should')
 
 describe('version control', () => {
   let jsreport
@@ -96,8 +96,9 @@ describe('version control', () => {
     await collection.insert({name: 'foo', content: '1'})
     const commit = await jsreport.versionControl.commit('1')
     const diff = await jsreport.versionControl.diff(commit._id)
-    diff.should.have.length(1)
+    diff.should.have.length(2)
     diff[0].path.should.be.eql('foo')
+    diff[1].path.should.be.eql('foo/content')
   })
 
   it('diff should list files changes between two commits', async () => {
@@ -106,9 +107,9 @@ describe('version control', () => {
     await collection.update({name: 'foo'}, {$set: {content: '2'}})
     const commit2 = await jsreport.versionControl.commit('2')
     const diff = await jsreport.versionControl.diff(commit2._id)
-    diff.should.have.length(1)
+    diff.should.have.length(2)
     diff[0].path.should.be.eql('foo')
-    diff[0].patch.documentProperties.should.have.length(1)
+    diff[1].path.should.be.eql('foo/content')
   })
 
   it('diff should list files changes between two commits where second commit has insert', async () => {
@@ -117,9 +118,9 @@ describe('version control', () => {
     await collection.insert({name: '2', content: '2'})
     const commit2 = await jsreport.versionControl.commit('2')
     const diff = await jsreport.versionControl.diff(commit2._id)
-    diff.should.have.length(1)
+    diff.should.have.length(2)
     diff[0].path.should.be.eql('2')
-    diff[0].patch.documentProperties.should.have.length(1)
+    diff[1].path.should.be.eql('2/content')
   })
 
   it('diff should list deep document properties changes between two commits', async () => {
@@ -127,11 +128,8 @@ describe('version control', () => {
     await jsreport.versionControl.commit('1')
     await collection.update({name: 'foo'}, {$set: { phantom: { header: '2' } }})
     const commit2 = await jsreport.versionControl.commit('2')
-    const diff = await jsreport.versionControl.diff(commit2._id)
-    diff.should.have.length(1)
-    diff[0].path.should.be.eql('foo')
-    diff[0].patch.documentProperties.should.have.length(1)
-    diff[0].patch.documentProperties[0].path.should.be.eql('phantom.header')
+    const diffs = await jsreport.versionControl.diff(commit2._id)
+    should(diffs.find((p) => p.path === 'foo/phantom.header')).be.ok()
   })
 
   it('diff should compare assets using utf8', async () => {
@@ -140,8 +138,8 @@ describe('version control', () => {
     await jsreport.documentStore.collection('assets').update({name: 'a'}, {$set: {content: 'č'}})
     const commit2 = await jsreport.versionControl.commit('2')
     const diff = await jsreport.versionControl.diff(commit2._id)
-    diff.should.have.length(1)
-    diff[0].patch.documentProperties[0].patch.should.containEql('č')
+    diff.should.have.length(2)
+    diff.find((p) => p.path === 'a/content').patch.should.containEql('č')
   })
 
   it('commit should store diffs for document properties separately', async () => {
