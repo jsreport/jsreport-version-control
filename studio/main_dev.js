@@ -35,7 +35,7 @@ class VCToolbar extends Component {
   openLocalChanges (e) {
     e.stopPropagation()
     this.tryHide()
-    Studio.openTab({ key: 'versionControlLocalChanges', editorComponentKey: 'versionControlLocalChanges', title: 'Local changes' })
+    Studio.openTab({ key: 'versionControlLocalChanges', editorComponentKey: 'versionControlLocalChanges', title: 'Uncommited changes' })
   }
 
   render () {
