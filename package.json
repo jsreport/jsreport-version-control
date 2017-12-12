@@ -62,6 +62,8 @@
   "files": [
     "lib",
     "studio",
+    "test",
+    "static",
     "index.js",
     "jsreport.config.js"
   ]
