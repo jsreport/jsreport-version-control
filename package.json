@@ -33,7 +33,7 @@
     "url": "git@github.com:jsreport/jsreport-version-control.git"
   },
   "license": "MIT",
-  "author": "",
+  "author": "Jan Blaha",
   "devDependencies": {
     "babel-eslint": "8.0.2",   
     "eslint": "4.11.0",
