@@ -1,2 +1,3 @@
 # jsreport-version-control
-jsreport extension adding support for versioning templates and other entities
+[![NPM Version](http://img.shields.io/npm/v/jsreport-version-control.svg?style=flat-square)](https://npmjs.com/package/jsreport-version-control)
+[![Build Status](https://travis-ci.org/jsreport/jsreport-version-control.png?branch=master)](https://travis-ci.org/jsreport/jsreport-version-control)

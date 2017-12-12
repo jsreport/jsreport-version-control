@@ -7,3 +7,5 @@ module.exports = function (options) {
   config.directory = __dirname
   return config
 }
+
+module.exports.tests = () => require('./test/common')
