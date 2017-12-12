@@ -1,5 +1,5 @@
 module.exports = {
-  'name': 'source-control',
+  'name': 'version-control',
   'main': 'lib/main.js',
   'dependencies': [ 'templates' ]
 }
