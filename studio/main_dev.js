@@ -29,7 +29,7 @@ class VCToolbar extends Component {
   openHistory (e) {
     e.stopPropagation()
     this.tryHide()
-    Studio.openTab({ key: 'versionControlHistory', editorComponentKey: 'versionControlHistory', title: 'Versions history' })
+    Studio.openTab({ key: 'versionControlHistory', editorComponentKey: 'versionControlHistory', title: 'Commits history' })
   }
 
   openLocalChanges (e) {
