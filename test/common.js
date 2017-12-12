@@ -129,6 +129,15 @@ module.exports = (jsreport, reload = () => {}) => {
     diff.find((p) => p.path.includes('a/content')).patch.should.containEql('č')
   })
 
+  it('diff should provide patch also for deletes', async () => {
+    await jsreport().documentStore.collection('templates').insert({name: 'a', content: 'hello'})
+    await jsreport().versionControl.commit('1')
+    await jsreport().documentStore.collection('templates').remove({})
+    const commit2 = await jsreport().versionControl.commit('2')
+    const diff = await jsreport().versionControl.diff(commit2._id)
+    diff.find((p) => p.path.includes('a/content')).patch.should.containEql('hello')
+  })
+
   it('should work for multiple entity types', async () => {
     await jsreport().documentStore.collection('templates').insert({name: 'foo'})
     await jsreport().documentStore.collection('data').insert({ name: 'foo', shortid: 'a' })
