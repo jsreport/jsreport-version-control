@@ -1,4 +1,5 @@
 
+const Promise = require('bluebird')
 const JsReport = require('jsreport-core')
 const common = require('./common')
 require('should')
@@ -13,7 +14,11 @@ describe('version control', () => {
     jsreport.use(require('jsreport-phantom-pdf')())
     jsreport.use(require('jsreport-assets')())
     jsreport.use(require('../')())
-    return jsreport.init()
+    await jsreport.init()
+
+    // postpone the commit to avoid having two commits in same ms
+    const old = jsreport.versionControl.commit.bind(jsreport.versionControl)
+    jsreport.versionControl.commit = (...args) => Promise.delay(3).then(() => old(...args))
   })
 
   common(() => jsreport)
