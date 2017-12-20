@@ -4,7 +4,7 @@
   "description": "jsreport extension adding support for versioning templates and other entities",
   "main": "index.js",
   "scripts": {
-    "test": "set DEBUG=jsreport&&mocha test&&standard",
+    "test": "set DEBUG=jsreport && mocha test && standard",
     "start": "jsreport-studio-start --httpPort 5488",
     "build": "jsreport-studio-build",
     "prepublish": "in-publish && jsreport-studio-build || not-in-publish"
@@ -35,19 +35,19 @@
   "license": "MIT",
   "author": "Jan Blaha",
   "devDependencies": {
-    "babel-eslint": "8.0.2",   
+    "babel-eslint": "8.0.2",
     "eslint": "4.11.0",
     "eslint-config-standard-jsx": "4.0.2",
     "eslint-plugin-babel": "4.1.2",
-    "in-publish": "2.0.0",  
+    "in-publish": "2.0.0",
     "jsreport-assets": "0.6.7",
     "jsreport-core": "1.5.1",
     "jsreport-data": "1.1.2",
-    "jsreport-express": "1.2.4",    
+    "jsreport-express": "1.2.4",
     "jsreport-phantom-pdf": "1.4.6",
     "jsreport-studio-dev": "1.1.1",
     "jsreport-templates": "1.2.2",
-    "mocha": "4.0.1",  
+    "mocha": "4.0.1",
     "rimraf": "2.6.2",
     "should": "13.1.3",
     "standard": "10.0.3",
@@ -57,7 +57,7 @@
     "node.extend": "2.0.0",
     "bluebird": "3.5.1",
     "diff": "3.4.0",
-    "diff2html": "2.3.2"    
+    "diff2html": "2.3.2"
   },
   "files": [
     "lib",
