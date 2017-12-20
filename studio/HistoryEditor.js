@@ -85,7 +85,7 @@ export default class HistoryEditor extends Component {
           </table>
         </div>
         <div style={{marginTop: '1rem', marginBottom: '1rem'}}>
-          {this.state.commit ? this.renderCommit(this.state.commit) : 'Select a commit....'}
+          {this.state.commit ? this.renderCommit(this.state.commit) : this.state.history.length > 0 ? 'Select a commit....' : ''}
         </div>
         <div className={style.listContainer + ' block-item'}>
           {this.state.diff ? <ChangesTable changes={this.state.diff} /> : ''}
