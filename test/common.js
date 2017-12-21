@@ -23,7 +23,7 @@ module.exports = (jsreport, reload = () => {}) => {
   it('revert should recover localy removed file', async () => {
     await jsreport().documentStore.collection('templates').insert({name: 'foo'})
     await jsreport().versionControl.commit('1')
-    jsreport().documentStore.collection('templates').remove({})
+    await jsreport().documentStore.collection('templates').remove({})
     await jsreport().versionControl.revert()
     await reload()
     const templates = await jsreport().documentStore.collection('templates').find({})
