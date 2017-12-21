@@ -64,11 +64,16 @@ export default class HistoryEditor extends Component {
     </div>)
   }
 
+  localChanges () {
+    Studio.openTab({ key: 'versionControlLocalChanges', editorComponentKey: 'versionControlLocalChanges', title: 'Uncommited changes' })
+  }
+
   render () {
     return (
       <div className='block custom-editor'>
         <h2><i className='fa fa-history' /> Commits history
           <button className='button confirmation' onClick={() => this.load()}>Refresh</button>
+          <button className='button confirmation' onClick={() => this.localChanges()}>Uncommited changes</button>
         </h2>
         <div className={style.listContainer + ' block-item'}>
           <table className='table'>

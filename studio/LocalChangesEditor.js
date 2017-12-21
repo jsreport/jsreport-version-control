@@ -52,10 +52,16 @@ export default class LocalChangesEditor extends Component {
     }
   }
 
+  history () {
+    Studio.openTab({ key: 'versionControlHistory', editorComponentKey: 'versionControlHistory', title: 'Commits history' })
+  }
+
   render () {
     return (
       <div className='block custom-editor'>
-        <h1><i className='fa fa-history' /> uncommited changes</h1>
+        <h1><i className='fa fa-history' /> uncommited changes
+          <button className='button confirmation' onClick={() => this.history()}>Commits history</button>
+        </h1>
         <div className='form-group'>
           <label>Message</label>
           <input type='text' value={this.state.message} onChange={(event) => this.setState({message: event.target.value, error: null})} />
