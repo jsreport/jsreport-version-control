@@ -45,7 +45,7 @@
     "jsreport-data": "1.1.2",
     "jsreport-express": "1.2.4",
     "jsreport-phantom-pdf": "1.4.6",
-    "jsreport-studio-dev": "1.1.1",
+    "jsreport-studio-dev": "1.1.2",
     "jsreport-templates": "1.2.2",
     "mocha": "4.0.1",
     "rimraf": "2.6.2",
