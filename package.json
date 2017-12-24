@@ -1,6 +1,6 @@
 {
   "name": "jsreport-version-control",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "jsreport extension adding support for versioning templates and other entities",
   "main": "index.js",
   "scripts": {
