@@ -37,7 +37,7 @@ describe('version control API', () => {
   })
 
   it('POST /api/version-control/revert', async () => {
-    await jsreport.documentStore.collection('templates').insert({name: 'foo'})
+    await jsreport.documentStore.collection('templates').insert({name: 'foo', engine: 'none', recipe: 'html'})
     await request(jsreport.express.app)
       .post('/api/version-control/revert')
       .expect(200)
