@@ -59,7 +59,8 @@ export default class LocalChangesEditor extends Component {
   render () {
     return (
       <div className='block custom-editor'>
-        <h1><i className='fa fa-history' /> uncommited changes
+        <h1>
+          <i className='fa fa-history' /> uncommited changes
           <button className='button confirmation' onClick={() => this.history()}>Commits history</button>
         </h1>
         <div className='form-group'>

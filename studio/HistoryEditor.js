@@ -71,7 +71,8 @@ export default class HistoryEditor extends Component {
   render () {
     return (
       <div className='block custom-editor'>
-        <h2><i className='fa fa-history' /> Commits history
+        <h2>
+          <i className='fa fa-history' /> Commits history
           <button className='button confirmation' onClick={() => this.load()}>Refresh</button>
           <button className='button confirmation' onClick={() => this.localChanges()}>Uncommited changes</button>
         </h2>
