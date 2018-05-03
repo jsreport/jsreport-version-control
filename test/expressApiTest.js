@@ -2,47 +2,103 @@ const JsReport = require('jsreport-core')
 const request = require('supertest')
 require('should')
 
-describe('version control API', () => {
+describe('version control http API', () => {
+  const adminUser = { username: 'admin', password: 'test' }
   let jsreport
-  beforeEach(() => {
-    jsreport = JsReport()
-    jsreport.use(require('jsreport-templates')())
-    jsreport.use(require('jsreport-express')({ httpPort: 5000 }))
-    jsreport.use(require('../')())
-    return jsreport.init()
+
+  afterEach(async () => {
+    if (jsreport) {
+      await jsreport.express.server.close()
+    }
   })
 
-  afterEach(() => {
-    jsreport.express.server.close()
+  describe('without authentication', () => {
+    beforeEach(async () => {
+      jsreport = JsReport()
+      jsreport.use(require('jsreport-templates')())
+      jsreport.use(require('jsreport-express')({ httpPort: 5000 }))
+      jsreport.use(require('../')())
+      await jsreport.init()
+    })
+
+    commonAPI()
   })
 
-  it('GET /api/version-control/history', async () => {
-    await jsreport.versionControl.commit('foo')
-    const res = await request(jsreport.express.app)
-      .get('/api/version-control/history')
-      .expect(200)
+  describe('with authentication enabled', () => {
+    const demoUser = { username: 'demo', password: 'demo' }
 
-    res.body.should.have.length(1)
+    beforeEach(async () => {
+      jsreport = JsReport()
+      jsreport.use(require('jsreport-templates')())
+      jsreport.use(require('jsreport-express')({ httpPort: 5000 }))
+      jsreport.use(require('jsreport-authentication')({
+        cookieSession: {
+          secret: 'secret'
+        },
+        admin: { ...adminUser },
+        enabled: true
+      }))
+      jsreport.use(require('../')())
+
+      await jsreport.init()
+
+      await jsreport.documentStore.collection('users').insert({
+        ...demoUser
+      })
+    })
+
+    it('should fail when user is not admin', async () => {
+      await request(jsreport.express.app)
+        .get('/api/version-control/history')
+        .auth(demoUser.username, demoUser.password)
+        .expect(401)
+    })
+
+    commonAPI(true)
   })
 
-  it('POST /api/version-control/commit', async () => {
-    await request(jsreport.express.app)
-      .post('/api/version-control/commit')
-      .send({ message: 'foo' })
-      .type('form')
-      .expect(200)
+  function commonAPI (authEnabled) {
+    function getRequest (app, { method, url }) {
+      if (authEnabled) {
+        return request(app)[method](url).auth(adminUser.username, adminUser.password)
+      }
 
-    const history = await jsreport.versionControl.history()
-    history.should.have.length(1)
-  })
+      return request(app)[method](url)
+    }
 
-  it('POST /api/version-control/revert', async () => {
-    await jsreport.documentStore.collection('templates').insert({name: 'foo'})
-    await request(jsreport.express.app)
-      .post('/api/version-control/revert')
-      .expect(200)
+    it('GET /api/version-control/history', async () => {
+      await jsreport.versionControl.commit('foo')
 
-    const templates = await jsreport.documentStore.collection('templates').find({})
-    templates.should.have.length(0)
-  })
+      const res = await getRequest(jsreport.express.app, {
+        method: 'get',
+        url: '/api/version-control/history'
+      }).expect(200)
+
+      res.body.should.have.length(1)
+    })
+
+    it('POST /api/version-control/commit', async () => {
+      await getRequest(jsreport.express.app, {
+        method: 'post',
+        url: '/api/version-control/commit'
+      }).send({ message: 'foo' })
+        .type('form')
+        .expect(200)
+
+      const history = await jsreport.versionControl.history()
+      history.should.have.length(1)
+    })
+
+    it('POST /api/version-control/revert', async () => {
+      await jsreport.documentStore.collection('templates').insert({name: 'foo', engine: 'none', recipe: 'html'})
+
+      await getRequest(jsreport.express.app, {
+        method: 'post',
+        url: '/api/version-control/revert'
+      }).expect(200)
+
+      const templates = await jsreport.documentStore.collection('templates').find({})
+      templates.should.have.length(0)
+    })
+  }
 })
