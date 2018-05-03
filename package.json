@@ -42,6 +42,7 @@
     "eslint-plugin-standard": "3.0.1",
     "in-publish": "2.0.0",
     "jsreport-assets": "github:jsreport/jsreport-assets#2.0.0-beta",
+    "jsreport-authentication": "github:jsreport/jsreport-authentication#2.0.0-beta",
     "jsreport-chrome-pdf": "github:jsreport/jsreport-chrome-pdf#2.0.0-beta",
     "jsreport-core": "github:jsreport/jsreport-core#2.0.0-beta",
     "jsreport-data": "github:jsreport/jsreport-data#2.0.0-beta",
