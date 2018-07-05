@@ -169,8 +169,17 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('localChanges should not return diff of unchanged entities', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', recipe: '1', engine: 'none'})
+    await jsreport().documentStore.collection('templates').insert({name: 'foo', recipe: '1', engine: 'none', chrome: {marginTop: '5px'}})
     await jsreport().versionControl.commit('1')
+    const diff = await jsreport().versionControl.localChanges()
+    diff.should.have.length(0)
+  })
+
+  it('localChanges should not return diff when insert update and no change for header', async () => {
+    await jsreport().documentStore.collection('templates').insert({name: 'foo', recipe: '1', engine: 'none', chrome: {headerTemplate: 'a'}})
+    await jsreport().versionControl.commit('1')
+    await jsreport().documentStore.collection('templates').update({name: 'foo'}, { $set: { chrome: { headerTemplate: 'b' } } })
+    await jsreport().versionControl.commit('2')
     const diff = await jsreport().versionControl.localChanges()
     diff.should.have.length(0)
   })
