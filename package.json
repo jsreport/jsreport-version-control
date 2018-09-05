@@ -59,7 +59,9 @@
   "dependencies": {
     "bluebird": "3.5.1",
     "diff": "3.4.0",
+    "diff-match-patch": "1.0.4",
     "diff2html": "2.3.2",
+    "isbinaryfile": "3.0.3",
     "node.extend": "2.0.0"
   },
   "files": [

@@ -1,10 +1,20 @@
 
 import Studio from 'jsreport-studio'
 
-const openDiff = async (patch) => {
+const openDiff = async (change) => {
+  console.log(change)
+  if (change.type === 'binary') {
+    const filename = change.path.split('/')[0]
+    const content = `
+      Binary file ${filename} <br/>
+      <a href="data:application/octet-stream;base64,${change.patch}" download="${filename}">Download</a>
+    `
+    return Studio.setPreviewFrameSrc('data:text/html;charset=utf-8,' + encodeURIComponent(content))
+  }
+
   const res = await Studio.api.post('/api/version-control/diff-html', {
     data: {
-      patch: patch
+      patch: change.patch
     },
     parseJSON: false
   })
@@ -21,7 +31,7 @@ const operationIcon = (operation) => {
 
 const renderChange = (c) => {
   return (<tbody key={c.entitySet + c.path}>
-    <tr onClick={() => openDiff(c.patch)}>
+    <tr onClick={() => openDiff(c)}>
       <td style={{textAlign: 'center'}}><i className={operationIcon(c.operation)} /></td>
       <td>{c.path}</td>
       <td>{c.entitySet}</td>
