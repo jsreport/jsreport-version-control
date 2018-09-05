@@ -64,6 +64,9 @@ export default class LocalChangesEditor extends Component {
           <button className='button confirmation' onClick={() => this.history()}>Commits history</button>
         </h1>
         <div className='form-group'>
+          The version control is currently in beta.
+        </div>
+        <div className='form-group'>
           <label>Message</label>
           <input type='text' value={this.state.message} onChange={(event) => this.setState({message: event.target.value, error: null})} />
           <span style={{color: 'red', display: this.state.error ? 'block' : 'none'}}>{this.state.error}</span>

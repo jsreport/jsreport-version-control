@@ -1,15 +1,12 @@
 
 import Studio from 'jsreport-studio'
+import DownloadBigFileModal from './DownloadBigFileModal'
 
 const openDiff = async (change) => {
-  console.log(change)
-  if (change.type === 'binary') {
-    const filename = change.path.split('/')[0]
-    const content = `
-      Binary file ${filename} <br/>
-      <a href="data:application/octet-stream;base64,${change.patch}" download="${filename}">Download</a>
-    `
-    return Studio.setPreviewFrameSrc('data:text/html;charset=utf-8,' + encodeURIComponent(content))
+  if (change.type === 'bigfile') {
+    return Studio.openModal(DownloadBigFileModal, {
+      change
+    })
   }
 
   const res = await Studio.api.post('/api/version-control/diff-html', {

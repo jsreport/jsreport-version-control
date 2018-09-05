@@ -60,17 +60,24 @@ describe('version control', () => {
     const patch = JSON.parse(commit.changes[0].serializedPatch)
     patch.documentProperties.should.have.length(1)
     patch.documentProperties[0].path.should.be.eql('chrome.headerTemplate')
-    should(patch.documentProperties[0].type).not.be.eql('binary')
+    should(patch.documentProperties[0].type).not.be.eql('bigfile')
   })
 
-  it('commit should store binary diffs for nested document properties', async () => {
-    await jsreport.documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html', chrome: { headerTemplate: Buffer.from([1]) } })
+  it('commit should store raw base64 for big nested document properties', async () => {
+    const longArray = []
+    const longArray2 = []
+    for (let i = 0; i < 600 * 1024; i++) {
+      longArray.push(i)
+      longArray2.push(i - 1)
+    }
+    await jsreport.documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html', chrome: { headerTemplate: Buffer.from(longArray) } })
     await jsreport.versionControl.commit('1')
-    await jsreport.documentStore.collection('templates').update({ name: 'foo' }, { $set: { chrome: { headerTemplate: Buffer.from([2]) } } })
+
+    await jsreport.documentStore.collection('templates').update({ name: 'foo' }, { $set: { chrome: { headerTemplate: Buffer.from(longArray2) } } })
     const commit = await jsreport.versionControl.commit('2')
     const patch = JSON.parse(commit.changes[0].serializedPatch)
     patch.documentProperties.should.have.length(1)
     patch.documentProperties[0].path.should.be.eql('chrome.headerTemplate')
-    patch.documentProperties[0].type.should.be.eql('binary')
+    patch.documentProperties[0].type.should.be.eql('bigfile')
   })
 })

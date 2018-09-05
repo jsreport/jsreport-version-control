@@ -2,7 +2,8 @@
 const schema = {
   type: 'object',
   properties: {
-    provider: { type: 'string' }
+    provider: { type: 'string' },
+    diffLimit: { type: 'string', default: '400kb' }
   }
 }
 
