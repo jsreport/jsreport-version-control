@@ -33,7 +33,7 @@ export default class DownloadBigFileModal extends Component {
 
     return <div>
       <h2>{filename}</h2>
-      <p>The version control doesn't diff big files. Please download it to see its content</p>
+      <p>The version control doesn't diff big or binary files. Please download it to see its content</p>
       <div className='button-bar'>
         <button className='button confirmation' onClick={() => this.download()}>Download</button>
       </div>

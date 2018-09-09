@@ -9,13 +9,7 @@ const openDiff = async (change) => {
     })
   }
 
-  const res = await Studio.api.post('/api/version-control/diff-html', {
-    data: {
-      patch: change.patch
-    },
-    parseJSON: false
-  })
-  Studio.setPreviewFrameSrc('data:text/html;charset=utf-8,' + encodeURIComponent(res))
+  Studio.customPreview('/api/version-control/diff-html', { patch: change.patch })
 }
 
 const operationIcon = (operation) => {

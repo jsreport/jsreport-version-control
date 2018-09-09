@@ -61,6 +61,7 @@
     "bytes": "3.0.0",
     "diff": "3.4.0",
     "diff2html": "2.3.2",
+    "isbinaryfile": "3.0.3",
     "node.extend": "2.0.0"
   },
   "files": [

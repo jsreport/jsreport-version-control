@@ -54,6 +54,7 @@ describe('version control', () => {
 
   it('commit should store diffs for nested document properties', async () => {
     await jsreport.documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html', chrome: { headerTemplate: 'header' } })
+
     await jsreport.versionControl.commit('1')
     await jsreport.documentStore.collection('templates').update({ name: 'foo' }, { $set: { chrome: { headerTemplate: 'header2' } } })
     const commit = await jsreport.versionControl.commit('2')
@@ -70,14 +71,15 @@ describe('version control', () => {
       longArray.push(i)
       longArray2.push(i - 1)
     }
-    await jsreport.documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html', chrome: { headerTemplate: Buffer.from(longArray) } })
+    await jsreport.documentStore.collection('assets').insert({ name: 'foo', content: Buffer.from(longArray) })
+
     await jsreport.versionControl.commit('1')
 
-    await jsreport.documentStore.collection('templates').update({ name: 'foo' }, { $set: { chrome: { headerTemplate: Buffer.from(longArray2) } } })
+    await jsreport.documentStore.collection('assets').update({ name: 'foo' }, { $set: { content: Buffer.from(longArray2) } })
     const commit = await jsreport.versionControl.commit('2')
     const patch = JSON.parse(commit.changes[0].serializedPatch)
     patch.documentProperties.should.have.length(1)
-    patch.documentProperties[0].path.should.be.eql('chrome.headerTemplate')
+    patch.documentProperties[0].path.should.be.eql('content')
     patch.documentProperties[0].type.should.be.eql('bigfile')
   })
 })
