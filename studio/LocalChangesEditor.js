@@ -9,16 +9,24 @@ export default class LocalChangesEditor extends Component {
     this.state = {message: ''}
   }
 
-  componentDidMount () {
+  onTabActive () {
     this.load()
   }
 
   async load () {
+    if (this.fetchRequested) {
+      return
+    }
+
+    this.fetchRequested = true
+
     try {
       const res = await Studio.api.get(`/api/version-control/local-changes`)
       this.setState({ diff: res })
     } catch (e) {
       alert(e)
+    } finally {
+      this.fetchRequested = false
     }
   }
 
@@ -74,7 +82,6 @@ export default class LocalChangesEditor extends Component {
         <div>
           <button className='button confirmation' onClick={() => this.commit()}>Commit</button>
           <button className='button danger' onClick={() => this.revert()}>Revert</button>
-          <button className='button confirmation' onClick={() => this.load()}>Refresh</button>
         </div>
         <div className={style.listContainer + ' block-item'}>
           {this.state.diff ? <ChangesTable changes={this.state.diff} /> : ''}

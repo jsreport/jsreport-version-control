@@ -9,16 +9,24 @@ export default class HistoryEditor extends Component {
     this.state = { history: [] }
   }
 
-  componentDidMount () {
+  onTabActive () {
     this.load()
   }
 
   async load () {
+    if (this.fetchRequested) {
+      return
+    }
+
+    this.fetchRequested = true
+
     try {
       const res = await Studio.api.get(`/api/version-control/history`)
       this.setState({ history: res })
     } catch (e) {
       alert(e)
+    } finally {
+      this.fetchRequested = false
     }
   }
 
@@ -73,7 +81,6 @@ export default class HistoryEditor extends Component {
       <div className='block custom-editor'>
         <h2>
           <i className='fa fa-history' /> Commits history
-          <button className='button confirmation' onClick={() => this.load()}>Refresh</button>
           <button className='button confirmation' onClick={() => this.localChanges()}>Uncommited changes</button>
         </h2>
         <div style={{marginTop: '1rem', marginBottom: '1rem'}}>
