@@ -34,7 +34,7 @@ export default class HistoryEditor extends Component {
     try {
       const localChanges = await Studio.api.get(`/api/version-control/local-changes`)
       if (localChanges.length > 0) {
-        return this.setState({error: 'You have uncommited changes. You need to commit or revert them before checkout.'})
+        return this.setState({ error: 'You have uncommited changes. You need to commit or revert them before checkout.' })
       }
       if (confirm('This will change the state of all entities to the state stored with selected commit. Are you sure?')) {
         await Studio.api.post(`/api/version-control/checkout`, {
@@ -67,7 +67,7 @@ export default class HistoryEditor extends Component {
       <div>
         <small>{commit.date.toLocaleString()}</small>
         <button className='button danger' onClick={() => this.checkout(commit._id)}>Checkout</button>
-        <span style={{color: 'red', marginTop: '0.5rem', display: this.state.error ? 'block' : 'none'}}>{this.state.error}</span>
+        <span style={{ color: 'red', marginTop: '0.5rem', display: this.state.error ? 'block' : 'none' }}>{this.state.error}</span>
       </div>
     </div>)
   }
@@ -83,7 +83,7 @@ export default class HistoryEditor extends Component {
           <i className='fa fa-history' /> Commits history
           <button className='button confirmation' onClick={() => this.localChanges()}>Uncommited changes</button>
         </h2>
-        <div style={{marginTop: '1rem', marginBottom: '1rem'}}>
+        <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
           {this.state.history.length > 0 ? 'Select a commit from the list to inspect the changes..' : ''}
         </div>
         <div className={style.listContainer + ' block-item'}>
@@ -100,7 +100,7 @@ export default class HistoryEditor extends Component {
             </tr>)}</tbody>
           </table>
         </div>
-        <div style={{marginTop: '1rem', marginBottom: '1rem'}}>
+        <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
           {this.state.commit ? this.renderCommit(this.state.commit) : null}
         </div>
         <div className={style.listContainer + ' block-item'}>

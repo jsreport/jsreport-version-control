@@ -47,7 +47,7 @@ Studio.initializeListeners.push(async () => {
       return (<div className='toolbar-button' onClick={(e) => this.openLocalChanges(e)}>
         <i className='fa fa-history ' />Commit
         <span className={style.runCaret} onClick={(e) => { e.stopPropagation(); this.setState({ expandedToolbar: !this.state.expandedToolbar }) }} />
-        <div className={style.runPopup} style={{display: this.state.expandedToolbar ? 'block' : 'none'}}>
+        <div className={style.runPopup} style={{ display: this.state.expandedToolbar ? 'block' : 'none' }}>
           <div title='History' className='toolbar-button' onClick={(e) => this.openHistory(e)}>
             <i className='fa fa-history' /><span>History</span>
           </div>

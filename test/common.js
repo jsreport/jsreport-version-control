@@ -2,9 +2,9 @@ const should = require('should')
 
 module.exports = (jsreport, reload = () => {}) => {
   it('revert should remove uncommited changes', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html' })
     await jsreport().versionControl.commit('1')
-    await jsreport().documentStore.collection('templates').update({name: 'foo'}, {$set: { name: 'foo2' }})
+    await jsreport().documentStore.collection('templates').update({ name: 'foo' }, { $set: { name: 'foo2' } })
     await jsreport().versionControl.revert()
     await reload()
     const templates = await jsreport().documentStore.collection('templates').find({})
@@ -13,7 +13,7 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('revert should remove all documents if there is no commit', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html' })
     await jsreport().versionControl.revert()
     await reload()
     const templates = await jsreport().documentStore.collection('templates').find({})
@@ -21,7 +21,7 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('revert should recover localy removed file', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html' })
     await jsreport().versionControl.commit('1')
     await jsreport().documentStore.collection('templates').remove({})
     await jsreport().versionControl.revert()
@@ -31,9 +31,9 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('revert should remove new local file', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html' })
     await jsreport().versionControl.commit('1')
-    await jsreport().documentStore.collection('templates').insert({name: 'foo2', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo2', engine: 'none', recipe: 'html' })
     await jsreport().versionControl.revert()
     await reload()
     const templates = await jsreport().documentStore.collection('templates').find({})
@@ -57,9 +57,9 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('history should list changed files', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html' })
     await jsreport().versionControl.commit('1')
-    await jsreport().documentStore.collection('templates').update({name: 'foo'}, {$set: { content: 'content' }})
+    await jsreport().documentStore.collection('templates').update({ name: 'foo' }, { $set: { content: 'content' } })
     await jsreport().versionControl.commit('2')
     const history = await jsreport().versionControl.history()
     history[0].message.should.be.eql('2')
@@ -67,13 +67,13 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('checkout should change local state to the particular commit', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', content: '1', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', content: '1', engine: 'none', recipe: 'html' })
     await jsreport().versionControl.commit('1')
-    await jsreport().documentStore.collection('templates').update({name: 'foo'}, {$set: { content: '2' }})
+    await jsreport().documentStore.collection('templates').update({ name: 'foo' }, { $set: { content: '2' } })
     await jsreport().versionControl.commit('2')
-    await jsreport().documentStore.collection('templates').update({name: 'foo'}, {$set: { content: '3' }})
+    await jsreport().documentStore.collection('templates').update({ name: 'foo' }, { $set: { content: '3' } })
     const commit3 = await jsreport().versionControl.commit('3')
-    await jsreport().documentStore.collection('templates').update({name: 'foo'}, {$set: { content: '4' }})
+    await jsreport().documentStore.collection('templates').update({ name: 'foo' }, { $set: { content: '4' } })
     await jsreport().versionControl.commit('4')
     await jsreport().versionControl.checkout(commit3._id)
     await reload()
@@ -83,7 +83,7 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('diff should list files changes for the first commit', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', content: '1', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', content: '1', engine: 'none', recipe: 'html' })
     const commit = await jsreport().versionControl.commit('1')
     const diff = await jsreport().versionControl.diff(commit._id)
     diff[0].path.should.containEql('foo')
@@ -91,9 +91,9 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('diff should list files changes between two commits', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', content: '1', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', content: '1', engine: 'none', recipe: 'html' })
     await jsreport().versionControl.commit('1')
-    await jsreport().documentStore.collection('templates').update({name: 'foo'}, {$set: {content: '2'}})
+    await jsreport().documentStore.collection('templates').update({ name: 'foo' }, { $set: { content: '2' } })
     const commit2 = await jsreport().versionControl.commit('2')
     const diff = await jsreport().versionControl.diff(commit2._id)
     diff.should.have.length(2)
@@ -102,9 +102,9 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('diff should list files changes between two commits where second commit has insert', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: '1', content: '1', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: '1', content: '1', engine: 'none', recipe: 'html' })
     await jsreport().versionControl.commit('1')
-    await jsreport().documentStore.collection('templates').insert({name: '2', content: '2', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: '2', content: '2', engine: 'none', recipe: 'html' })
     const commit2 = await jsreport().versionControl.commit('2')
     const diff = await jsreport().versionControl.diff(commit2._id)
     diff[0].path.should.containEql('2')
@@ -112,25 +112,25 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('diff should list deep document properties changes between two commits', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', content: '1', chrome: { headerTemplate: '1' }, engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', content: '1', chrome: { headerTemplate: '1' }, engine: 'none', recipe: 'html' })
     await jsreport().versionControl.commit('1')
-    await jsreport().documentStore.collection('templates').update({name: 'foo'}, {$set: { chrome: { headerTemplate: '2' } }})
+    await jsreport().documentStore.collection('templates').update({ name: 'foo' }, { $set: { chrome: { headerTemplate: '2' } } })
     const commit2 = await jsreport().versionControl.commit('2')
     const diffs = await jsreport().versionControl.diff(commit2._id)
     should(diffs.find((p) => p.path.includes('foo/header'))).be.ok()
   })
 
   it('diff should compare assets using utf8', async () => {
-    await jsreport().documentStore.collection('assets').insert({name: 'a', content: Buffer.from('a')})
+    await jsreport().documentStore.collection('assets').insert({ name: 'a', content: Buffer.from('a') })
     await jsreport().versionControl.commit('1')
-    await jsreport().documentStore.collection('assets').update({name: 'a'}, {$set: {content: Buffer.from('č')}})
+    await jsreport().documentStore.collection('assets').update({ name: 'a' }, { $set: { content: Buffer.from('č') } })
     const commit2 = await jsreport().versionControl.commit('2')
     const diff = await jsreport().versionControl.diff(commit2._id)
     diff.find((p) => p.path.includes('a/content')).patch.should.containEql('č')
   })
 
   it('diff should provide patch also for deletes', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'a', content: 'hello', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'a', content: 'hello', engine: 'none', recipe: 'html' })
     await jsreport().versionControl.commit('1')
     await jsreport().documentStore.collection('templates').remove({})
     const commit2 = await jsreport().versionControl.commit('2')
@@ -139,7 +139,7 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('should work for multiple entity types', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', engine: 'none', recipe: 'html'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html' })
     await jsreport().documentStore.collection('data').insert({ name: 'foo', shortid: 'a' })
     await jsreport().versionControl.commit('1')
     await jsreport().documentStore.collection('data').update({ name: 'foo' }, { $set: { shortid: 'b' } })
@@ -159,9 +159,9 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('localChanges should diff current state with previous commit', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', recipe: '1', engine: 'none'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', recipe: '1', engine: 'none' })
     await jsreport().versionControl.commit('1')
-    await jsreport().documentStore.collection('templates').update({name: 'foo'}, { $set: { recipe: '2' } })
+    await jsreport().documentStore.collection('templates').update({ name: 'foo' }, { $set: { recipe: '2' } })
     const diff = await jsreport().versionControl.localChanges()
     diff.should.have.length(1)
     diff[0].path.should.containEql('foo')
@@ -169,27 +169,27 @@ module.exports = (jsreport, reload = () => {}) => {
   })
 
   it('localChanges should not return diff of unchanged entities', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', recipe: '1', engine: 'none', chrome: {marginTop: '5px'}})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', recipe: '1', engine: 'none', chrome: { marginTop: '5px' } })
     await jsreport().versionControl.commit('1')
     const diff = await jsreport().versionControl.localChanges()
     diff.should.have.length(0)
   })
 
   it('localChanges should not return diff when insert update and no change for header', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', recipe: '1', engine: 'none', chrome: {headerTemplate: 'a'}})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', recipe: '1', engine: 'none', chrome: { headerTemplate: 'a' } })
     await jsreport().versionControl.commit('1')
-    await jsreport().documentStore.collection('templates').update({name: 'foo'}, { $set: { chrome: { headerTemplate: 'b' } } })
+    await jsreport().documentStore.collection('templates').update({ name: 'foo' }, { $set: { chrome: { headerTemplate: 'b' } } })
     await jsreport().versionControl.commit('2')
     const diff = await jsreport().versionControl.localChanges()
     diff.should.have.length(0)
   })
 
   it('renamed entity should store the new name in path', async () => {
-    await jsreport().documentStore.collection('templates').insert({name: 'foo', recipe: '1', engine: 'none'})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', recipe: '1', engine: 'none' })
     await jsreport().versionControl.commit('1')
-    await jsreport().documentStore.collection('templates').update({name: 'foo'}, {$set: {name: 'foo2'}})
+    await jsreport().documentStore.collection('templates').update({ name: 'foo' }, { $set: { name: 'foo2' } })
     await jsreport().versionControl.commit('2')
-    await jsreport().documentStore.collection('templates').update({name: 'foo2'}, {$set: {recipe: '2'}})
+    await jsreport().documentStore.collection('templates').update({ name: 'foo2' }, { $set: { recipe: '2' } })
     const diff = await jsreport().versionControl.localChanges()
     diff.should.have.length(1)
     diff[0].path.should.containEql('foo2')

@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import fileSaver from 'filesaver.js-npm'
 
 const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {

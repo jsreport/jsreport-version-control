@@ -23,7 +23,7 @@ const operationIcon = (operation) => {
 const renderChange = (c) => {
   return (<tbody key={c.entitySet + c.path}>
     <tr onClick={() => openDiff(c)}>
-      <td style={{textAlign: 'center'}}><i className={operationIcon(c.operation)} /></td>
+      <td style={{ textAlign: 'center' }}><i className={operationIcon(c.operation)} /></td>
       <td>{c.path}</td>
       <td>{c.entitySet}</td>
     </tr>
@@ -33,7 +33,7 @@ const renderChange = (c) => {
 export default ({ changes }) => (<table className='table'>
   <thead>
     <tr>
-      <th style={{width: '20px'}}>operation</th>
+      <th style={{ width: '20px' }}>operation</th>
       <th>path</th>
       <th>entity set</th>
     </tr>

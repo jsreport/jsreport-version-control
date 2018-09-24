@@ -6,7 +6,7 @@ import style from './VersionControl.scss'
 export default class LocalChangesEditor extends Component {
   constructor (props) {
     super(props)
-    this.state = {message: ''}
+    this.state = { message: '' }
   }
 
   onTabActive () {
@@ -76,8 +76,8 @@ export default class LocalChangesEditor extends Component {
         </div>
         <div className='form-group'>
           <label>Message</label>
-          <input type='text' value={this.state.message} onChange={(event) => this.setState({message: event.target.value, error: null})} />
-          <span style={{color: 'red', display: this.state.error ? 'block' : 'none'}}>{this.state.error}</span>
+          <input type='text' value={this.state.message} onChange={(event) => this.setState({ message: event.target.value, error: null })} />
+          <span style={{ color: 'red', display: this.state.error ? 'block' : 'none' }}>{this.state.error}</span>
         </div>
         <div>
           <button className='button confirmation' onClick={() => this.commit()}>Commit</button>
