@@ -28,15 +28,29 @@ export default class DownloadBigFileModal extends Component {
     fileSaver.saveAs(blob, this.props.options.change.path.split('/')[0])
   }
 
+  renderDownload () {
+    return <div><p>The version control doesn't diff big or binary files. Please download it to see its content</p>
+      <div className='button-bar'>
+        <button className='button confirmation' onClick={() => this.download()}>Download</button>
+      </div>
+    </div>
+  }
+
+  renderEmpty () {
+    return <div>
+      <p>The new document is empty.</p>
+      <div className='button-bar'>
+        <button className='button confirmation' onClick={() => this.props.close()}>Ok</button>
+      </div>
+    </div>
+  }
+
   render () {
     const filename = this.props.options.change.path.split('/')[0]
 
     return <div>
       <h2>{filename}</h2>
-      <p>The version control doesn't diff big or binary files. Please download it to see its content</p>
-      <div className='button-bar'>
-        <button className='button confirmation' onClick={() => this.download()}>Download</button>
-      </div>
+      {this.props.options.change.patch ? this.renderDownload() : this.renderEmpty() }
     </div>
   }
 }

@@ -82,4 +82,42 @@ describe('version control', () => {
     patch.documentProperties[0].path.should.be.eql('content')
     patch.documentProperties[0].type.should.be.eql('bigfile')
   })
+
+  it('diff of removed entity should show null in patch', async () => {
+    const longArray = []
+    for (let i = 0; i < 600 * 1024; i++) {
+      longArray.push(i)
+    }
+
+    await jsreport.documentStore.collection('assets').insert({ name: 'foo', content: Buffer.from(longArray) })
+    await jsreport.versionControl.commit('1')
+
+    await jsreport.documentStore.collection('assets').remove({ name: 'foo' })
+
+    const changes = await jsreport.versionControl.localChanges()
+    changes.should.have.length(2)
+    changes[0].path.should.be.eql('foo')
+    changes[1].path.should.be.eql('foo/content')
+    should(changes[1].patch).be.null()
+  })
+
+  it('big document property insert array/commit, update null/commit, update array and revert should restore to null', async () => {
+    const longArray = []
+    for (let i = 0; i < 600 * 1024; i++) {
+      longArray.push(i)
+    }
+
+    await jsreport.documentStore.collection('assets').insert({ name: 'foo', content: Buffer.from(longArray) })
+    await jsreport.versionControl.commit('1')
+
+    await jsreport.documentStore.collection('assets').update({ name: 'foo' }, { $set: { content: null } })
+    await jsreport.versionControl.commit('2')
+
+    await jsreport.documentStore.collection('assets').update({ name: 'foo' }, { $set: { content: Buffer.from([]) } })
+
+    await jsreport.versionControl.revert()
+
+    const asset = await jsreport.documentStore.collection('assets').findOne({ name: 'foo' })
+    should(asset.content).be.null()
+  })
 })
