@@ -45,9 +45,9 @@ describe('version control', () => {
 
   it('entity insert in second commit should be present in the commit changes', async () => {
     await jsreport.documentStore.collection('templates').insert({ name: '1', engine: 'none', recipe: 'html' })
-    await jsreport.versionControl.commit('1')
+    await jsreport.versionControl.commit('commit 1')
     await jsreport.documentStore.collection('templates').insert({ name: '2', engine: 'none', recipe: 'html' })
-    const commit = await jsreport.versionControl.commit('2')
+    const commit = await jsreport.versionControl.commit('commit 2')
     commit.changes.should.have.length(1)
     commit.changes[0].path.should.be.eql('2')
   })

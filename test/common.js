@@ -103,9 +103,9 @@ module.exports = (jsreport, reload = () => {}) => {
 
   it('diff should list files changes between two commits where second commit has insert', async () => {
     await jsreport().documentStore.collection('templates').insert({ name: '1', content: '1', engine: 'none', recipe: 'html' })
-    await jsreport().versionControl.commit('1')
+    await jsreport().versionControl.commit('commit 1')
     await jsreport().documentStore.collection('templates').insert({ name: '2', content: '2', engine: 'none', recipe: 'html' })
-    const commit2 = await jsreport().versionControl.commit('2')
+    const commit2 = await jsreport().versionControl.commit('commit 2')
     const diff = await jsreport().versionControl.diff(commit2._id)
     diff[0].path.should.containEql('2')
     diff[1].path.should.containEql('2/content')
@@ -140,9 +140,9 @@ module.exports = (jsreport, reload = () => {}) => {
 
   it('should work for multiple entity types', async () => {
     await jsreport().documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html' })
-    await jsreport().documentStore.collection('data').insert({ name: 'foo', shortid: 'a' })
-    await jsreport().versionControl.commit('1')
-    await jsreport().documentStore.collection('data').update({ name: 'foo' }, { $set: { shortid: 'b' } })
+    await jsreport().documentStore.collection('data').insert({ name: 'dataFoo', shortid: 'a' })
+    await jsreport().versionControl.commit('commit 1')
+    await jsreport().documentStore.collection('data').update({ name: 'dataFoo' }, { $set: { shortid: 'b' } })
     await jsreport().versionControl.revert()
     await reload()
     const dataItems = await jsreport().documentStore.collection('data').find({})
