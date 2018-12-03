@@ -22,10 +22,10 @@ const operationIcon = (operation) => {
 
 const renderChange = (c) => {
   return (
-    <tbody key={`${c.entitySet}-${c.fullPath}`}>
+    <tbody key={`${c.entitySet}-${c.path}`}>
       <tr onClick={() => openDiff(c)}>
         <td style={{ textAlign: 'center' }}><i className={operationIcon(c.operation)} /></td>
-        <td>{c.fullPath}</td>
+        <td>{c.path}</td>
         <td>{c.entitySet}</td>
       </tr>
     </tbody>

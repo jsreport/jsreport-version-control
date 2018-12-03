@@ -49,7 +49,7 @@ describe('version control', () => {
     await jsreport.documentStore.collection('templates').insert({ name: '2', engine: 'none', recipe: 'html' })
     const commit = await jsreport.versionControl.commit('commit 2')
     commit.changes.should.have.length(1)
-    commit.changes[0].path.should.be.eql('2')
+    commit.changes[0].path.should.be.eql('/2')
   })
 
   it('commit should store diffs for nested document properties', async () => {
@@ -96,8 +96,8 @@ describe('version control', () => {
 
     const changes = await jsreport.versionControl.localChanges()
     changes.should.have.length(2)
-    changes[0].path.should.be.eql('foo')
-    changes[1].path.should.be.eql('foo/content')
+    changes[0].path.should.be.eql('/foo')
+    changes[1].path.should.be.eql('/foo/content')
     should(changes[1].patch).be.null()
   })
 

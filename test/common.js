@@ -86,8 +86,9 @@ module.exports = (jsreport, reload = () => {}) => {
     await jsreport().documentStore.collection('templates').insert({ name: 'foo', content: '1', engine: 'none', recipe: 'html' })
     const commit = await jsreport().versionControl.commit('1')
     const diff = await jsreport().versionControl.diff(commit._id)
-    diff[0].path.should.containEql('foo')
-    diff[1].path.should.containEql('foo/content')
+    const diffsToInspect = diff.filter((d) => d.path.startsWith('/foo'))
+    diffsToInspect[0].path.should.containEql('/foo')
+    diffsToInspect[1].path.should.containEql('/foo/content')
   })
 
   it('diff should list files changes between two commits', async () => {
@@ -193,5 +194,14 @@ module.exports = (jsreport, reload = () => {}) => {
     const diff = await jsreport().versionControl.localChanges()
     diff.should.have.length(1)
     diff[0].path.should.containEql('foo2')
+  })
+
+  it('commit should store entity\'s path hierarchy', async () => {
+    await jsreport().documentStore.collection('folders').insert({ name: 'f1', shortid: 'f1' })
+    await jsreport().documentStore.collection('templates').insert({ name: '1', engine: 'none', recipe: 'html', folder: { shortid: 'f1' } })
+    const commit = await jsreport().versionControl.commit('commit 1')
+    const changes = commit.changes.filter((c) => c.path.includes('/1'))
+    changes.should.have.length(1)
+    changes[0].path.should.be.eql('/f1/1')
   })
 }
