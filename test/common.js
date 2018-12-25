@@ -56,6 +56,24 @@ module.exports = (jsreport, reload = () => {}) => {
     assets[0].content.toString().should.be.eql('2')
   })
 
+  it('revert should process folders insert the first', async () => {
+    await jsreport().documentStore.collection('templates').beforeUpdateListeners.add('test', async (q, doc, res) => {
+      if (doc.$set.folder) {
+        const f = await jsreport().documentStore.collection('folders').findOne({ shortid: doc.$set.folder.shortid })
+        if (!f) {
+          throw new Error('Folder not found')
+        }
+      }
+    })
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html' })
+    const commit1 = await jsreport().versionControl.commit('1')
+    await jsreport().documentStore.collection('folders').insert({ name: 'a', shortid: 'a' })
+    await jsreport().documentStore.collection('templates').update({ name: 'foo' }, { $set: { folder: { shortid: 'a' } } })
+    await jsreport().versionControl.commit('2')
+    await jsreport().versionControl.checkout(commit1._id)
+    await jsreport().versionControl.revert()
+  })
+
   it('history should list changed files', async () => {
     await jsreport().documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html' })
     await jsreport().versionControl.commit('1')
