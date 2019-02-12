@@ -62,7 +62,7 @@
     "diff": "3.5.0",
     "diff2html": "2.5.0",
     "isbinaryfile": "3.0.3",
-    "node.extend.without.arrays": "1.1.5"
+    "node.extend.without.arrays": "1.1.6"
   },
   "files": [
     "lib",
