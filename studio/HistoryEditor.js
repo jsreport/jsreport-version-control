@@ -42,8 +42,8 @@ export default class HistoryEditor extends Component {
             _id: id
           }
         })
-        // studio needs a method to reload entities, it would be also usefull for export import
-        location.reload()
+
+        return Studio.reset().catch((e) => console.error(e))
       }
     } catch (e) {
       alert(e)

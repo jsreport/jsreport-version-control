@@ -52,8 +52,8 @@ export default class LocalChangesEditor extends Component {
     try {
       if (confirm('This will delete all your uncommited files and revert changes. Are you sure?')) {
         await Studio.api.post(`/api/version-control/revert`)
-        // studio needs a method to reload entities, it would be also usefull for export import
-        location.reload()
+
+        return Studio.reset().catch((e) => console.error(e))
       }
     } catch (e) {
       alert(e)
