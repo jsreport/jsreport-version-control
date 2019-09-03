@@ -5,7 +5,8 @@
  *
  */
 
- .d2h-wrapper {
+.d2h-wrapper {
+  background-color: #fff;
   text-align: left;
 }
 
@@ -373,4 +374,3 @@
 .selecting-right td.d2h-code-side-linenumber *::selection {
   background: transparent;
 }
-

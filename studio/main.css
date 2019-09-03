@@ -1,19 +1,19 @@
 
-.runCaret {
+.x-version-control-VersionControl-runCaret {
   font-family: FontAwesome;
   padding: 0.5rem;
   font-size: 0.7rem;
 }
 
-.runCaret:hover {
+.x-version-control-VersionControl-runCaret:hover {
   color: $formPrimary-color;
 }
 
-.runCaret:after {
+.x-version-control-VersionControl-runCaret:after {
   content: "\f0d7 "
 }
 
-.runPopup {
+.x-version-control-VersionControl-runPopup {
   background-color: $toolbar-popup-backgroundColor;
   top: 2.4rem;
   position: absolute;
@@ -21,7 +21,7 @@
   z-index: 200;
 }
 
-.listContainer {
+.x-version-control-VersionControl-listContainer {
   overflow: auto;
   position: relative;
   padding: 1rem;
@@ -29,9 +29,10 @@
   height: auto;
 }
 
-.listContainer > table {
+.x-version-control-VersionControl-listContainer > table {
   /* it somehow shows the horizontal scrollbar even when no needeit, this workaround to hide it */
   width: 95%;
   /* the tabs height based on flex box is otherwise wrongly calculated */
   position: absolute !important;
 }
+
