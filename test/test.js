@@ -24,40 +24,44 @@ describe('version control', () => {
   common(() => jsreport)
 
   it('commit should store diffs for document properties separately', async () => {
-    await jsreport.documentStore.collection('templates').insert({ name: 'foo', content: '1', helpers: '1', engine: 'none', recipe: 'html' })
-    await jsreport.versionControl.commit('1')
-    await jsreport.documentStore.collection('templates').update({ name: 'foo' }, { $set: { content: '2', helpers: '2' } })
-    const commit = await jsreport.versionControl.commit('2')
+    const req = jsreport.Request({})
+    await jsreport.documentStore.collection('templates').insert({ name: 'foo', content: '1', helpers: '1', engine: 'none', recipe: 'html' }, req)
+    await jsreport.versionControl.commit('1', undefined, req)
+    await jsreport.documentStore.collection('templates').update({ name: 'foo' }, { $set: { content: '2', helpers: '2' } }, req)
+    const commit = await jsreport.versionControl.commit('2', undefined, req)
     commit.changes.should.have.length(1)
     const patch = JSON.parse(commit.changes[0].serializedPatch)
     patch.documentProperties.should.have.length(2)
   })
 
   it('commit should store diffs only for changed document props', async () => {
-    await jsreport.documentStore.collection('templates').insert({ name: 'foo', content: '1', helpers: '1', engine: 'none', recipe: 'html' })
-    await jsreport.versionControl.commit('1')
-    await jsreport.documentStore.collection('templates').update({ name: 'foo' }, { $set: { content: '2' } })
-    const commit = await jsreport.versionControl.commit('2')
+    const req = jsreport.Request({})
+    await jsreport.documentStore.collection('templates').insert({ name: 'foo', content: '1', helpers: '1', engine: 'none', recipe: 'html' }, req)
+    await jsreport.versionControl.commit('1', undefined, req)
+    await jsreport.documentStore.collection('templates').update({ name: 'foo' }, { $set: { content: '2' } }, req)
+    const commit = await jsreport.versionControl.commit('2', undefined, req)
     commit.changes.should.have.length(1)
     const patch = JSON.parse(commit.changes[0].serializedPatch)
     patch.documentProperties.should.have.length(1)
   })
 
   it('entity insert in second commit should be present in the commit changes', async () => {
-    await jsreport.documentStore.collection('templates').insert({ name: '1', engine: 'none', recipe: 'html' })
-    await jsreport.versionControl.commit('commit 1')
-    await jsreport.documentStore.collection('templates').insert({ name: '2', engine: 'none', recipe: 'html' })
-    const commit = await jsreport.versionControl.commit('commit 2')
+    const req = jsreport.Request({})
+    await jsreport.documentStore.collection('templates').insert({ name: '1', engine: 'none', recipe: 'html' }, req)
+    await jsreport.versionControl.commit('commit 1', undefined, req)
+    await jsreport.documentStore.collection('templates').insert({ name: '2', engine: 'none', recipe: 'html' }, req)
+    const commit = await jsreport.versionControl.commit('commit 2', undefined, req)
     commit.changes.should.have.length(1)
     commit.changes[0].path.should.be.eql('/2')
   })
 
   it('commit should store diffs for nested document properties', async () => {
-    await jsreport.documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html', chrome: { headerTemplate: 'header' } })
+    const req = jsreport.Request({})
+    await jsreport.documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html', chrome: { headerTemplate: 'header' } }, req)
 
-    await jsreport.versionControl.commit('1')
-    await jsreport.documentStore.collection('templates').update({ name: 'foo' }, { $set: { chrome: { headerTemplate: 'header2' } } })
-    const commit = await jsreport.versionControl.commit('2')
+    await jsreport.versionControl.commit('1', undefined, req)
+    await jsreport.documentStore.collection('templates').update({ name: 'foo' }, { $set: { chrome: { headerTemplate: 'header2' } } }, req)
+    const commit = await jsreport.versionControl.commit('2', undefined, req)
     const patch = JSON.parse(commit.changes[0].serializedPatch)
     patch.documentProperties.should.have.length(1)
     patch.documentProperties[0].path.should.be.eql('chrome.headerTemplate')
@@ -71,12 +75,15 @@ describe('version control', () => {
       longArray.push(i)
       longArray2.push(i - 1)
     }
-    await jsreport.documentStore.collection('assets').insert({ name: 'foo', content: Buffer.from(longArray) })
 
-    await jsreport.versionControl.commit('1')
+    const req = jsreport.Request({})
 
-    await jsreport.documentStore.collection('assets').update({ name: 'foo' }, { $set: { content: Buffer.from(longArray2) } })
-    const commit = await jsreport.versionControl.commit('2')
+    await jsreport.documentStore.collection('assets').insert({ name: 'foo', content: Buffer.from(longArray) }, req)
+
+    await jsreport.versionControl.commit('1', undefined, req)
+
+    await jsreport.documentStore.collection('assets').update({ name: 'foo' }, { $set: { content: Buffer.from(longArray2) } }, req)
+    const commit = await jsreport.versionControl.commit('2', undefined, req)
     const patch = JSON.parse(commit.changes[0].serializedPatch)
     patch.documentProperties.should.have.length(1)
     patch.documentProperties[0].path.should.be.eql('content')
@@ -89,12 +96,14 @@ describe('version control', () => {
       longArray.push(i)
     }
 
-    await jsreport.documentStore.collection('assets').insert({ name: 'foo', content: Buffer.from(longArray) })
-    await jsreport.versionControl.commit('1')
+    const req = jsreport.Request({})
 
-    await jsreport.documentStore.collection('assets').remove({ name: 'foo' })
+    await jsreport.documentStore.collection('assets').insert({ name: 'foo', content: Buffer.from(longArray) }, req)
+    await jsreport.versionControl.commit('1', undefined, req)
 
-    const changes = await jsreport.versionControl.localChanges()
+    await jsreport.documentStore.collection('assets').remove({ name: 'foo' }, req)
+
+    const changes = await jsreport.versionControl.localChanges(req)
     changes.should.have.length(2)
     changes[0].path.should.be.eql('/foo')
     changes[1].path.should.be.eql('/foo/content')
@@ -107,17 +116,19 @@ describe('version control', () => {
       longArray.push(i)
     }
 
-    await jsreport.documentStore.collection('assets').insert({ name: 'foo', content: Buffer.from(longArray) })
-    await jsreport.versionControl.commit('1')
+    const req = jsreport.Request({})
 
-    await jsreport.documentStore.collection('assets').update({ name: 'foo' }, { $set: { content: null } })
-    await jsreport.versionControl.commit('2')
+    await jsreport.documentStore.collection('assets').insert({ name: 'foo', content: Buffer.from(longArray) }, req)
+    await jsreport.versionControl.commit('1', undefined, req)
 
-    await jsreport.documentStore.collection('assets').update({ name: 'foo' }, { $set: { content: Buffer.from([]) } })
+    await jsreport.documentStore.collection('assets').update({ name: 'foo' }, { $set: { content: null } }, req)
+    await jsreport.versionControl.commit('2', undefined, req)
 
-    await jsreport.versionControl.revert()
+    await jsreport.documentStore.collection('assets').update({ name: 'foo' }, { $set: { content: Buffer.from([]) } }, req)
 
-    const asset = await jsreport.documentStore.collection('assets').findOne({ name: 'foo' })
+    await jsreport.versionControl.revert(req)
+
+    const asset = await jsreport.documentStore.collection('assets').findOne({ name: 'foo' }, req)
     should(asset.content).be.null()
   })
 })
