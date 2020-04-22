@@ -42,7 +42,7 @@
     "eslint-plugin-standard": "4.0.0",
     "in-publish": "2.0.0",
     "jsreport-assets": "1.5.2",
-    "jsreport-authentication": "2.4.1",
+    "jsreport-authentication": "2.4.2",
     "jsreport-chrome-pdf": "1.7.1",
     "jsreport-core": "2.7.2",
     "jsreport-data": "2.2.0",

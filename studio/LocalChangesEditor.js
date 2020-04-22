@@ -6,7 +6,7 @@ import style from './VersionControl.scss'
 export default class LocalChangesEditor extends Component {
   constructor (props) {
     super(props)
-    this.state = { message: '' }
+    this.state = { message: '', inExecution: false }
   }
 
   onTabActive () {
@@ -31,9 +31,15 @@ export default class LocalChangesEditor extends Component {
   }
 
   async commit () {
+    if (this.state.inExecution) {
+      return
+    }
+
     if (!this.state.message) {
       return this.setState({ error: 'Commit message must be filled' })
     }
+
+    this.setState({ inExecution: true })
 
     try {
       await Studio.api.post(`/api/version-control/commit`, {
@@ -41,21 +47,31 @@ export default class LocalChangesEditor extends Component {
           message: this.state.message
         }
       })
-      this.setState({ message: '', error: null })
+      this.setState({ message: '', error: null, inExecution: false })
       await this.load()
     } catch (e) {
+      this.setState({ inExecution: false })
       alert(e)
     }
   }
 
   async revert () {
+    if (this.state.inExecution) {
+      return
+    }
+
+    this.setState({ inExecution: true })
+
     try {
       if (confirm('This will delete all your uncommited files and revert changes. Are you sure?')) {
         await Studio.api.post(`/api/version-control/revert`)
-
+        this.setState({ inExecution: false })
         return Studio.reset().catch((e) => console.error(e))
+      } else {
+        this.setState({ inExecution: false })
       }
     } catch (e) {
+      this.setState({ inExecution: false })
       alert(e)
     }
   }
@@ -80,8 +96,8 @@ export default class LocalChangesEditor extends Component {
           <span style={{ color: 'red', display: this.state.error ? 'block' : 'none' }}>{this.state.error}</span>
         </div>
         <div>
-          <button className='button confirmation' onClick={() => this.commit()}>Commit</button>
-          <button className='button danger' onClick={() => this.revert()}>Revert</button>
+          <button className='button confirmation' disabled={this.state.inExecution} onClick={() => this.commit()}>Commit</button>
+          <button className='button danger' disabled={this.state.inExecution} onClick={() => this.revert()}>Revert</button>
         </div>
         <div className={style.listContainer + ' block-item'}>
           {this.state.diff ? <ChangesTable changes={this.state.diff} /> : ''}

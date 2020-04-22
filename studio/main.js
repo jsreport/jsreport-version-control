@@ -427,7 +427,7 @@ var HistoryEditor = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (HistoryEditor.__proto__ || Object.getPrototypeOf(HistoryEditor)).call(this));
 
-    _this.state = { history: [] };
+    _this.state = { history: [], inExecution: false };
     return _this;
   }
 
@@ -502,54 +502,72 @@ var HistoryEditor = function (_Component) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _context2.prev = 0;
-                _context2.next = 3;
-                return _jsreportStudio2.default.api.get('/api/version-control/local-changes');
-
-              case 3:
-                localChanges = _context2.sent;
-
-                if (!(localChanges.length > 0)) {
-                  _context2.next = 6;
+                if (!this.state.inExecution) {
+                  _context2.next = 2;
                   break;
                 }
 
-                return _context2.abrupt('return', this.setState({ error: 'You have uncommited changes. You need to commit or revert them before checkout.' }));
+                return _context2.abrupt('return');
+
+              case 2:
+                _context2.prev = 2;
+
+                this.setState({ inExecution: true });
+
+                _context2.next = 6;
+                return _jsreportStudio2.default.api.get('/api/version-control/local-changes');
 
               case 6:
-                if (!confirm('This will change the state of all entities to the state stored with selected commit. Are you sure?')) {
+                localChanges = _context2.sent;
+
+                if (!(localChanges.length > 0)) {
                   _context2.next = 10;
                   break;
                 }
 
-                _context2.next = 9;
+                this.setState({ inExecution: false });
+                return _context2.abrupt('return', this.setState({ error: 'You have uncommited changes. You need to commit or revert them before checkout.' }));
+
+              case 10:
+                if (!confirm('This will change the state of all entities to the state stored with selected commit. Are you sure?')) {
+                  _context2.next = 17;
+                  break;
+                }
+
+                _context2.next = 13;
                 return _jsreportStudio2.default.api.post('/api/version-control/checkout', {
                   data: {
                     _id: id
                   }
                 });
 
-              case 9:
+              case 13:
+
+                this.setState({ inExecution: false });
                 return _context2.abrupt('return', _jsreportStudio2.default.reset().catch(function (e) {
                   return console.error(e);
                 }));
 
-              case 10:
-                _context2.next = 15;
+              case 17:
+                this.setState({ inExecution: false });
+
+              case 18:
+                _context2.next = 24;
                 break;
 
-              case 12:
-                _context2.prev = 12;
-                _context2.t0 = _context2['catch'](0);
+              case 20:
+                _context2.prev = 20;
+                _context2.t0 = _context2['catch'](2);
 
+                this.setState({ inExecution: false });
                 alert(_context2.t0);
 
-              case 15:
+              case 24:
               case 'end':
                 return _context2.stop();
             }
           }
-        }, _callee2, this, [[0, 12]]);
+        }, _callee2, this, [[2, 20]]);
       }));
 
       function checkout(_x) {
@@ -625,7 +643,7 @@ var HistoryEditor = function (_Component) {
           ),
           _react2.default.createElement(
             'button',
-            { className: 'button danger', onClick: function onClick() {
+            { className: 'button danger', disabled: this.state.inExecution, onClick: function onClick() {
                 return _this2.checkout(commit._id);
               } },
             'Checkout'
@@ -932,7 +950,7 @@ var LocalChangesEditor = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (LocalChangesEditor.__proto__ || Object.getPrototypeOf(LocalChangesEditor)).call(this, props));
 
-    _this.state = { message: '' };
+    _this.state = { message: '', inExecution: false };
     return _this;
   }
 
@@ -1006,43 +1024,55 @@ var LocalChangesEditor = function (_Component) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                if (this.state.message) {
+                if (!this.state.inExecution) {
                   _context2.next = 2;
+                  break;
+                }
+
+                return _context2.abrupt('return');
+
+              case 2:
+                if (this.state.message) {
+                  _context2.next = 4;
                   break;
                 }
 
                 return _context2.abrupt('return', this.setState({ error: 'Commit message must be filled' }));
 
-              case 2:
-                _context2.prev = 2;
-                _context2.next = 5;
+              case 4:
+
+                this.setState({ inExecution: true });
+
+                _context2.prev = 5;
+                _context2.next = 8;
                 return _jsreportStudio2.default.api.post('/api/version-control/commit', {
                   data: {
                     message: this.state.message
                   }
                 });
 
-              case 5:
-                this.setState({ message: '', error: null });
-                _context2.next = 8;
+              case 8:
+                this.setState({ message: '', error: null, inExecution: false });
+                _context2.next = 11;
                 return this.load();
 
-              case 8:
-                _context2.next = 13;
+              case 11:
+                _context2.next = 17;
                 break;
 
-              case 10:
-                _context2.prev = 10;
-                _context2.t0 = _context2['catch'](2);
+              case 13:
+                _context2.prev = 13;
+                _context2.t0 = _context2['catch'](5);
 
+                this.setState({ inExecution: false });
                 alert(_context2.t0);
 
-              case 13:
+              case 17:
               case 'end':
                 return _context2.stop();
             }
           }
-        }, _callee2, this, [[2, 10]]);
+        }, _callee2, this, [[5, 13]]);
       }));
 
       function commit() {
@@ -1059,37 +1089,53 @@ var LocalChangesEditor = function (_Component) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                _context3.prev = 0;
-
-                if (!confirm('This will delete all your uncommited files and revert changes. Are you sure?')) {
-                  _context3.next = 5;
+                if (!this.state.inExecution) {
+                  _context3.next = 2;
                   break;
                 }
 
-                _context3.next = 4;
+                return _context3.abrupt('return');
+
+              case 2:
+
+                this.setState({ inExecution: true });
+
+                _context3.prev = 3;
+
+                if (!confirm('This will delete all your uncommited files and revert changes. Are you sure?')) {
+                  _context3.next = 11;
+                  break;
+                }
+
+                _context3.next = 7;
                 return _jsreportStudio2.default.api.post('/api/version-control/revert');
 
-              case 4:
+              case 7:
+                this.setState({ inExecution: false });
                 return _context3.abrupt('return', _jsreportStudio2.default.reset().catch(function (e) {
                   return console.error(e);
                 }));
 
-              case 5:
-                _context3.next = 10;
+              case 11:
+                this.setState({ inExecution: false });
+
+              case 12:
+                _context3.next = 18;
                 break;
 
-              case 7:
-                _context3.prev = 7;
-                _context3.t0 = _context3['catch'](0);
+              case 14:
+                _context3.prev = 14;
+                _context3.t0 = _context3['catch'](3);
 
+                this.setState({ inExecution: false });
                 alert(_context3.t0);
 
-              case 10:
+              case 18:
               case 'end':
                 return _context3.stop();
             }
           }
-        }, _callee3, this, [[0, 7]]);
+        }, _callee3, this, [[3, 14]]);
       }));
 
       function revert() {
@@ -1151,14 +1197,14 @@ var LocalChangesEditor = function (_Component) {
           null,
           _react2.default.createElement(
             'button',
-            { className: 'button confirmation', onClick: function onClick() {
+            { className: 'button confirmation', disabled: this.state.inExecution, onClick: function onClick() {
                 return _this2.commit();
               } },
             'Commit'
           ),
           _react2.default.createElement(
             'button',
-            { className: 'button danger', onClick: function onClick() {
+            { className: 'button danger', disabled: this.state.inExecution, onClick: function onClick() {
                 return _this2.revert();
               } },
             'Revert'

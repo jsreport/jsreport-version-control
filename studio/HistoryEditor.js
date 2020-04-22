@@ -6,7 +6,7 @@ import style from './VersionControl.scss'
 export default class HistoryEditor extends Component {
   constructor () {
     super()
-    this.state = { history: [] }
+    this.state = { history: [], inExecution: false }
   }
 
   onTabActive () {
@@ -31,11 +31,20 @@ export default class HistoryEditor extends Component {
   }
 
   async checkout (id) {
+    if (this.state.inExecution) {
+      return
+    }
+
     try {
+      this.setState({ inExecution: true })
+
       const localChanges = await Studio.api.get(`/api/version-control/local-changes`)
+
       if (localChanges.length > 0) {
+        this.setState({ inExecution: false })
         return this.setState({ error: 'You have uncommited changes. You need to commit or revert them before checkout.' })
       }
+
       if (confirm('This will change the state of all entities to the state stored with selected commit. Are you sure?')) {
         await Studio.api.post(`/api/version-control/checkout`, {
           data: {
@@ -43,9 +52,13 @@ export default class HistoryEditor extends Component {
           }
         })
 
+        this.setState({ inExecution: false })
         return Studio.reset().catch((e) => console.error(e))
+      } else {
+        this.setState({ inExecution: false })
       }
     } catch (e) {
+      this.setState({ inExecution: false })
       alert(e)
     }
   }
@@ -66,7 +79,7 @@ export default class HistoryEditor extends Component {
       <h2><i className='fa fa-info-circle' /> {commit.message}</h2>
       <div>
         <small>{commit.date.toLocaleString()}</small>
-        <button className='button danger' onClick={() => this.checkout(commit._id)}>Checkout</button>
+        <button className='button danger' disabled={this.state.inExecution} onClick={() => this.checkout(commit._id)}>Checkout</button>
         <span style={{ color: 'red', marginTop: '0.5rem', display: this.state.error ? 'block' : 'none' }}>{this.state.error}</span>
       </div>
     </div>)
