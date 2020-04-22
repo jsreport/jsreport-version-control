@@ -67,6 +67,7 @@ describe('version control http API', () => {
     }
 
     it('GET /api/version-control/history', async () => {
+      await jsreport.documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html' })
       await jsreport.versionControl.commit('foo')
 
       const res = await getRequest(jsreport.express.app, {
@@ -78,6 +79,8 @@ describe('version control http API', () => {
     })
 
     it('POST /api/version-control/commit', async () => {
+      await jsreport.documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html' })
+
       await getRequest(jsreport.express.app, {
         method: 'post',
         url: '/api/version-control/commit'
