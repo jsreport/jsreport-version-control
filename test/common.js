@@ -244,9 +244,4 @@ module.exports = (jsreport, reload = () => {}) => {
     changes.should.have.length(1)
     changes[0].path.should.be.eql('/f1/1')
   })
-
-  it('commit should throw error when there is no changes to commit', async () => {
-    const req = jsreport().Request({})
-    return should(jsreport().versionControl.commit('commit 1', undefined, req)).be.rejectedWith(/there is no changes to commit/)
-  })
 }

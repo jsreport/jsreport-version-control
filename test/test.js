@@ -23,6 +23,11 @@ describe('version control', () => {
 
   common(() => jsreport)
 
+  it('commit should throw error when there is no changes to commit', async () => {
+    const req = jsreport.Request({})
+    return should(jsreport.versionControl.commit('commit 1', undefined, req)).be.rejectedWith(/there is no changes to commit/)
+  })
+
   it('commit should store diffs for document properties separately', async () => {
     const req = jsreport.Request({})
     await jsreport.documentStore.collection('templates').insert({ name: 'foo', content: '1', helpers: '1', engine: 'none', recipe: 'html' }, req)
