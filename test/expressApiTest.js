@@ -67,8 +67,9 @@ describe('version control http API', () => {
     }
 
     it('GET /api/version-control/history', async () => {
+      const req = jsreport.Request({})
       await jsreport.documentStore.collection('templates').insert({ name: 'foo', engine: 'none', recipe: 'html' })
-      await jsreport.versionControl.commit('foo')
+      await jsreport.versionControl.commit('foo', undefined, req)
 
       const res = await getRequest(jsreport.express.app, {
         method: 'get',
@@ -88,7 +89,8 @@ describe('version control http API', () => {
         .type('form')
         .expect(200)
 
-      const history = await jsreport.versionControl.history()
+      const req = jsreport.Request({})
+      const history = await jsreport.versionControl.history(req)
       history.should.have.length(1)
     })
 
