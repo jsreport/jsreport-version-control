@@ -44,7 +44,7 @@
     "jsreport-assets": "1.5.2",
     "jsreport-authentication": "2.4.2",
     "jsreport-chrome-pdf": "1.7.1",
-    "jsreport-core": "github:jsreport/jsreport-core#new-scripts-api",
+    "jsreport-core": "github:jsreport/jsreport-core",
     "jsreport-data": "2.2.0",
     "jsreport-express": "2.6.0",
     "jsreport-studio-dev": "1.5.0",
