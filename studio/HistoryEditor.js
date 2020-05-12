@@ -107,10 +107,14 @@ export default class HistoryEditor extends Component {
                 <th>message</th>
               </tr>
             </thead>
-            <tbody>{this.state.history.map((h) => <tr key={h._id} onClick={() => this.selectCommit(h)}>
-              <td>{h.date.toLocaleString()}</td>
-              <td>{h.message}</td>
-            </tr>)}</tbody>
+            <tbody>
+              {this.state.history.map((h) => (
+                <tr key={h._id} onClick={() => this.selectCommit(h)}>
+                  <td>{h.date.toLocaleString()}</td>
+                  <td>{h.message}</td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
         <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>

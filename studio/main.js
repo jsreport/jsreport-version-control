@@ -819,8 +819,23 @@ var DownloadBigFileModal = function (_Component) {
   _createClass(DownloadBigFileModal, [{
     key: 'download',
     value: function download() {
-      var blob = b64toBlob(this.props.options.change.patch);
-      _filesaver2.default.saveAs(blob, this.props.options.change.path.split('/')[0]);
+      var blob = b64toBlob(this.props.options.change.patch, this.props.options.change.contentMimeType);
+      var nameParts = this.props.options.change.name.split('.');
+      var nameExtension = void 0;
+
+      if (nameParts.length > 1) {
+        nameExtension = nameParts.slice(-1)[0];
+      }
+
+      var filename = '';
+
+      if (nameExtension != null && nameExtension === this.props.options.change.contentFileExtension) {
+        filename = this.props.options.change.name;
+      } else {
+        filename = this.props.options.change.name + '.' + this.props.options.change.contentFileExtension;
+      }
+
+      _filesaver2.default.saveAs(blob, filename);
     }
   }, {
     key: 'renderDownload',

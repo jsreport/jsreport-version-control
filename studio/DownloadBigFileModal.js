@@ -24,8 +24,23 @@ const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
 
 export default class DownloadBigFileModal extends Component {
   download () {
-    const blob = b64toBlob(this.props.options.change.patch)
-    fileSaver.saveAs(blob, this.props.options.change.path.split('/')[0])
+    const blob = b64toBlob(this.props.options.change.patch, this.props.options.change.contentMimeType)
+    const nameParts = this.props.options.change.name.split('.')
+    let nameExtension
+
+    if (nameParts.length > 1) {
+      nameExtension = nameParts.slice(-1)[0]
+    }
+
+    let filename = ''
+
+    if (nameExtension != null && nameExtension === this.props.options.change.contentFileExtension) {
+      filename = this.props.options.change.name
+    } else {
+      filename = `${this.props.options.change.name}.${this.props.options.change.contentFileExtension}`
+    }
+
+    fileSaver.saveAs(blob, filename)
   }
 
   renderDownload () {
