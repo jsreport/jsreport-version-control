@@ -235,13 +235,13 @@ module.exports = (jsreport, reload = () => {}) => {
     diff[0].path.should.containEql('foo2')
   })
 
-  it('commit should store entity\'s path hierarchy', async () => {
+  it('local changes should show entity\'s path hierarchy', async () => {
     const req = jsreport().Request({})
     await jsreport().documentStore.collection('folders').insert({ name: 'f1', shortid: 'f1' }, req)
     await jsreport().documentStore.collection('templates').insert({ name: '1', engine: 'none', recipe: 'html', folder: { shortid: 'f1' } }, req)
-    const commit = await jsreport().versionControl.commit('commit 1', undefined, req)
-    const changes = commit.changes.filter((c) => c.path.includes('/1'))
+    const localChanges = await jsreport().versionControl.localChanges(req)
+    const changes = localChanges.filter((c) => c.path.includes('/1'))
     changes.should.have.length(1)
-    changes[0].path.should.be.eql('/f1/1')
+    changes[0].path.should.be.containEql('/f1/1')
   })
 }
