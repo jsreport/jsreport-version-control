@@ -350,6 +350,16 @@ module.exports = (jsreport, reload = () => {}) => {
     diff[0].operation.should.be.eql('update')
   })
 
+  it('localChanges should not return diff when the last commit contains entity update by _id', async () => {
+    const req = jsreport().Request({})
+    await jsreport().documentStore.collection('templates').insert({ name: 'foo', recipe: '1', engine: 'none', chrome: { marginTop: '5px' } }, req)
+    await jsreport().versionControl.commit('1', undefined, req)
+    await jsreport().documentStore.collection('templates').update({ name: 'foo' }, { $set: { _id: 'custom' } }, req)
+    await jsreport().versionControl.commit('2', undefined, req)
+    const diff = await jsreport().versionControl.localChanges(req)
+    diff.should.have.length(0)
+  })
+
   it('renamed entity should store the new name in path', async () => {
     const req = jsreport().Request({})
     await jsreport().documentStore.collection('templates').insert({ name: 'foo', recipe: '1', engine: 'none' }, req)
