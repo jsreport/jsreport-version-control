@@ -29,7 +29,7 @@ describe('version control', () => {
 
   it('commit should throw error when there is no changes to commit', async () => {
     const req = jsreport.Request({})
-    return should(jsreport.versionControl.commit('commit 1', undefined, req)).be.rejectedWith(/there is no changes to commit/)
+    return should(jsreport.versionControl.commit('commit 1', undefined, req)).be.rejectedWith(/there are no changes to commit/)
   })
 
   it('commit should store diffs for document properties separately', async () => {
