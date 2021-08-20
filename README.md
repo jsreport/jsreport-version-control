@@ -1,3 +1,6 @@
+**⚠️ This repository has been moved to the monorepo [jsreport/jsreport](https://github.com/jsreport/jsreport)**
+--
+
 # jsreport-version-control
 [![NPM Version](http://img.shields.io/npm/v/jsreport-version-control.svg?style=flat-square)](https://npmjs.com/package/jsreport-version-control)
 [![Build Status](https://travis-ci.com/jsreport/jsreport-version-control.png?branch=master)](https://travis-ci.com/jsreport/jsreport-version-control)
